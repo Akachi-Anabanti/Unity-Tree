@@ -1,42 +1,3 @@
-<script setup lang="ts">
-import { reactive } from 'vue';
-import { useForm } from 'vuestic-ui';
-import { ref } from 'vue'
-
-const basic = ref([])
-
-const { isValid, validate } = useForm('formRef')
-
-const form = reactive({
-  firstName: '',
-  lastName: '',
-  country: '',
-  birthDate: null as Date | null,
-  Gender: '',
-})
-
-const validateBirthday = (value: Date | null) => {
-  if (!value) {
-    return 'Field is required'
-  }
-
-  const today = new Date()
-  let yearDiff = today.getFullYear() - value.getFullYear()
-  const monthDiff = today.getMonth() - value.getMonth()
-
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < value.getDate())) {
-    yearDiff--
-  }
-
-  return yearDiff >= 18 || 'You must be at least 18 years old'
-}
-
-const submit = () => { 
-  alert("Form Saved Successfully")
-}
-</script>
-
-
 <template>
     <VaForm ref="formRef" class="items-baseline gap-6">
       <VaInput
@@ -53,7 +14,7 @@ const submit = () => {
     
       <VaDateInput 
         v-model="form.birthDate"
-        :rules="[(v) => validateBirthday(v)]"
+        :rules="[(value) => validateBirthday(value)]"
         label="Birth Date"
         manual-input
         clearable
@@ -68,8 +29,8 @@ const submit = () => {
       </div>
       
       <VaFileUpload
-        v-model="basic"
-        dropzone
+        v-model='basic'
+       
         file-types="jpg,png,jpeg"
         />
 
@@ -83,4 +44,41 @@ const submit = () => {
   </template>
   
 
-  
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { useForm } from 'vuestic-ui';
+import { ref } from 'vue'
+
+const basic = ref([])
+
+const { isValid, validate } = useForm('formRef')
+
+const form = reactive({
+  firstName: '',
+  lastName: '',
+  country: '',
+  birthDate: null,
+  Gender: '',
+})
+
+const validateBirthday = (value) => {
+  if (!value) {
+    return 'Field is required'
+  }
+}
+//   const today = new Date()
+//   let yearDiff = today.getFullYear() - value.getFullYear()
+//   const monthDiff = today.getMonth() - value.getMonth()
+
+//   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < value.getDate())) {
+//     yearDiff--
+//   }
+
+//   return yearDiff >= 18 || 'You must be at least 18 years old'
+// }
+
+
+const submit = () => { 
+  alert("Form Saved Successfully")
+}
+</script>

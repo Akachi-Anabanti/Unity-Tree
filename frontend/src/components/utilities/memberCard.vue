@@ -1,39 +1,51 @@
 <template>
-    Membercard
+  <VaCard :bordered="false">
+    <VaIcon name="delete" size="large" @click="null" color="danger"/>
+    <div class="card-avatar">
+      <VaAvatar :src="person.img" size="large"/>
+    </div>
+    <VaCardTitle class="mb-4">{{ person.name }}</VaCardTitle>
+    <VaCardContent>{{ person.address }}</VaCardContent>
+  </VaCard>
 </template>
 
-
 <script setup>
-    const contacts = [
-  {
-    name: "Luke Skywalker",
-    address: "644 Vermont Court, Freelandville, Kentucky, 2619",
-    img: "https://randomuser.me/api/portraits/women/5.jpg",
-  },
-  {
-    name: "C-3PO",
-    address: "626 Carroll Street, Roulette, Ohio, 1477",
-    img: "https://randomuser.me/api/portraits/men/1.jpg",
-  },
-  {
-    name: "Obi-Wan Kenobi",
-    address: "887 Winthrop Street, Tryon, Florida, 3912",
-    img: "https://randomuser.me/api/portraits/men/2.jpg",
-  },
-  {
-    name: "Jabba Desilijic Tiure",
-    address: "286 NW. Shore St.Longwood, FL 32777",
-    img: "https://randomuser.me/api/portraits/women/4.jpg",
-  },
-  {
-    name: "Yoda",
-    address: "353 NW. Shore St.Longwood, FL 32778",
-    img: "https://randomuser.me/api/portraits/men/5.jpg",
-  },
-  {
-    name: "Darth Vader",
-    address: "265 NW. Shore St.Longwood, FL 32779",
-    img: "https://randomuser.me/api/portraits/men/6.jpg",
-  },
-];
+ const person = defineProps({
+  img: {type: String, required: true},
+  name: {type: String, required:true},
+  address: { type: String, required: true}
+ })
 </script>
+
+<style scoped>
+.va-card {
+  width: 150px;
+  height: auto;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.va-avatar {
+  margin: 0.5rem;
+  height: 100px;
+  width: 100px;
+  align-self: center;
+  border: solid 1px blue;
+}
+.card-avatar{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
+.va-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+.va-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+</style>

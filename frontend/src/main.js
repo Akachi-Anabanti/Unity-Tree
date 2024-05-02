@@ -17,11 +17,13 @@ import {
     VaSelect,
     VaFileUpload,
     VaDateInput,
-    VaAvatar} from 'vuestic-ui';
+    VaAvatar,
+    VaImage} from 'vuestic-ui';
 
 import 'vuestic-ui/styles/essential.css';
 import 'vuestic-ui/styles/typography.css'
-import './assets/main.css'
+import './assets/main.css';
+
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -37,10 +39,11 @@ app.use(router)
 
 app.use(createVuesticEssential({ 
     components: { 
-        VaButton, VaIcon, VaCard, VaCardTitle, VaCardContent, 
+        VaButton, VaIcon, VaCard, VaCardTitle, VaCardContent,
         VaLayout, VaSidebar, VaNavbar, VaNavbarItem, VaSidebarItemTitle, 
         VaSidebarItem, VaSidebarItemContent, VaCarousel, VaConfig, VaModal, VaForm,
-    VaInput, VaDateInput, VaCounter,VaOptionList, VaCheckbox, VaSelect, VaFileUpload, VaAvatar
+    VaInput, VaDateInput, VaCounter,VaOptionList, VaCheckbox, VaSelect, VaFileUpload, VaAvatar,
+    VaImage
 },
 }));
 app.mount('#app')
