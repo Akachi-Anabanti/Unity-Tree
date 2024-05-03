@@ -1,43 +1,51 @@
 <template>
-    <VaForm ref="formRef" class="items-baseline gap-6">
+    <VaForm ref="formRef" class="items-baseline gap-6"
+    >
       <VaInput
-        v-model="form.firstName"
-        :rules="[(value) => (value && value.length > 0) || 'First name is required']"
-        label="firstName"
+        v-model="form.name"
+        :rules="[(value) => (value && value.length > 0) || 'Full name is required']"
+        label="fullName"
       />
     
-      <VaInput
+      <!-- <VaInput
         v-model="form.lastName"
         :rules="[(value) => (value && value.length > 0) || 'Last name is required']"
         label="Last Name"
-      />
+      /> -->
     
-      <VaDateInput 
-        v-model="form.birthDate"
+      <VaDateInput
+        v-model="form.dateOfBirth"
         :rules="[(value) => validateBirthday(value)]"
         label="Birth Date"
         manual-input
         clearable
       />
-      <div>
+      <!-- <div>
         <span class="va-title">Gender</span>
         <VaOptionList
           v-model="form.Gender"
           :options="['Female', 'Male']"
           type="radio"
         />      
-      </div>
+      </div> -->
       
+      <VaSelect
+        v-model="form.role"
+        :options="roleOptions"
+        placeholder="Role"
+        required-mark
+       /> 
+
+
       <VaFileUpload
         v-model='basic'
-       
         file-types="jpg,png,jpeg"
         />
 
       <div class="m-8">
         <VaButton color="success" :disabled="!isValid" @click="validate() && submit()">
-          Save
-      </VaButton>
+          Add
+        </VaButton>
       </div>
    
     </VaForm>
@@ -45,20 +53,33 @@
   
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 import { useForm } from 'vuestic-ui';
 import { ref } from 'vue'
 
+const emit = defineEmits(['submit'])
+
 const basic = ref([])
 
-const { isValid, validate } = useForm('formRef')
+const { isValid, validate} = useForm('formRef')
 
 const form = reactive({
-  firstName: '',
-  lastName: '',
-  country: '',
-  birthDate: null,
-  Gender: '',
+  name: '',
+  dateOfBirth: null,
+  img: "",
+  role: ""
+})
+const roleOptions = ref([
+  'child',
+  'parent'
+])
+watch(() => basic.value, () => {
+  if (form.img) {
+    URL.revokeObjectURL(form.img);
+  }
+  if (basic.value.length > 0) {
+    form.img = URL.createObjectURL(basic.value[0]);
+  }
 })
 
 const validateBirthday = (value) => {
@@ -66,19 +87,11 @@ const validateBirthday = (value) => {
     return 'Field is required'
   }
 }
-//   const today = new Date()
-//   let yearDiff = today.getFullYear() - value.getFullYear()
-//   const monthDiff = today.getMonth() - value.getMonth()
-
-//   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < value.getDate())) {
-//     yearDiff--
-//   }
-
-//   return yearDiff >= 18 || 'You must be at least 18 years old'
-// }
 
 
-const submit = () => { 
-  alert("Form Saved Successfully")
+const submit =  () => {
+  emit('submit', form)
+  
+
 }
 </script>

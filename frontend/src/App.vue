@@ -76,6 +76,16 @@
                 </VaSidebarItemContent>
             </RouterLink>
         </VaSidebarItem>
+        <VaSidebarItem :active="page === 'landing'" @click="page = 'landing'">
+            <RouterLink to="/landing">
+                <VaSidebarItemContent>
+                    <VaIcon name="papper-plane" />
+                    <VaSidebarItemTitle>
+                        landing
+                    </VaSidebarItemTitle>
+                </VaSidebarItemContent>
+            </RouterLink>
+        </VaSidebarItem>
     </VaSidebar>
     </template>
 

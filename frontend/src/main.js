@@ -18,6 +18,7 @@ import {
     VaFileUpload,
     VaDateInput,
     VaAvatar,
+    VaAlert,
     VaImage} from 'vuestic-ui';
 
 import 'vuestic-ui/styles/essential.css';
@@ -43,7 +44,7 @@ app.use(createVuesticEssential({
         VaLayout, VaSidebar, VaNavbar, VaNavbarItem, VaSidebarItemTitle, 
         VaSidebarItem, VaSidebarItemContent, VaCarousel, VaConfig, VaModal, VaForm,
     VaInput, VaDateInput, VaCounter,VaOptionList, VaCheckbox, VaSelect, VaFileUpload, VaAvatar,
-    VaImage
+    VaImage, VaAlert
 },
 }));
 app.mount('#app')
