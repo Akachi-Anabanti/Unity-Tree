@@ -33,7 +33,6 @@
         v-model="form.role"
         :options="roleOptions"
         placeholder="Role"
-        required-mark
        /> 
 
 
@@ -50,7 +49,6 @@
    
     </VaForm>
   </template>
-  
 
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
@@ -61,7 +59,7 @@ const emit = defineEmits(['submit'])
 
 const basic = ref([])
 
-const { isValid, validate} = useForm('formRef')
+const { isValid, validate, resetValidation, reset} = useForm('formRef')
 
 const form = reactive({
   name: '',
@@ -90,8 +88,9 @@ const validateBirthday = (value) => {
 
 
 const submit =  () => {
-  emit('submit', form)
-  
-
+  const formCopy = {...form}
+  emit('submit', formCopy)
+  resetValidation()
+  reset()
 }
 </script>

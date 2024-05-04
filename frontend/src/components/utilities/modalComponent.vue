@@ -2,24 +2,19 @@
 import { ref } from 'vue';
 import AlertComponent from './AlertComponent.vue';
 
+const isCloseableAlertVisible = ref(true)
+
 // Modal properties
 defineProps({
     showAlertFailure: {type:Boolean},
     showAlertSuccess: {type: Boolean},
     showAlertWarning: {type: Boolean},
-    alertMessage: {type:String}
+    alertMessage: {type:String},
 })
-
-// enables close
-const isCloseableAlertVisible = ref(true)
 
 // two way model link
 const showModal = defineModel({required:true})
 
-const handleClose = (hide) => {
-    isCloseableAlertVisible.value = false
-    hide()
-}
 </script>
 
 <template>
@@ -33,11 +28,10 @@ const handleClose = (hide) => {
        allow-body-scroll
        no-dismiss
        show-nested-overlay
-       :before-close="handleClose"
 
    >
         <template #header>
-            <AlertComponent
+            <AlertComponent 
                 :showAlertSuccess="showAlertSuccess"
                 :showAlertFailure="showAlertFailure"
                 :showAlertWarning="showAlertWarning"

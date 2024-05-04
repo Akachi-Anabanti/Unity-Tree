@@ -1,22 +1,21 @@
 <script setup>
 
-// makes alert closable
-const isCloseableAlertVisible = defineModel()
-
 // Alert component properties
 defineProps({
     showAlertSuccess:{type:Boolean},
     showAlertFailure:{type:Boolean},
     showAlertWarning : {type:Boolean},
-    alertMessage: {type:String}
+    alertMessage: {type:String},
 })
+const isCloseableAlertVisible= defineModel()
 </script>
 
 <template>
     <!-- Success alert -->
-    <VaAlert v-if="showAlertSuccess" color="success"
+    <VaAlert v-if="showAlertSuccess" color="primary"
         closeable
         v-model="isCloseableAlertVisible"
+        
         >
         <template #icon>
             <VaIcon name="check" />

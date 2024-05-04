@@ -76,16 +76,25 @@
                 </VaSidebarItemContent>
             </RouterLink>
         </VaSidebarItem>
-        <VaSidebarItem :active="page === 'landing'" @click="page = 'landing'">
-            <RouterLink to="/landing">
-                <VaSidebarItemContent>
-                    <VaIcon name="papper-plane" />
-                    <VaSidebarItemTitle>
-                        landing
-                    </VaSidebarItemTitle>
-                </VaSidebarItemContent>
-            </RouterLink>
+        
+        <VaSidebarItem :active="page === 'settings'" @click="page = 'setting'">
+            <VaSidebarItemContent>
+              <VaIcon name="settings" />
+                <VaSidebarItemTitle>
+                      Settings
+                  </VaSidebarItemTitle>
+              </VaSidebarItemContent>
         </VaSidebarItem>
+
+        <VaSidebarItem :active="page === 'explore'" @click="page = 'explore'">
+            <VaSidebarItemContent>
+              <VaIcon name="explore" />
+                <VaSidebarItemTitle>
+                    Discover
+                  </VaSidebarItemTitle>
+                </VaSidebarItemContent>
+        </VaSidebarItem>
+
     </VaSidebar>
     </template>
 

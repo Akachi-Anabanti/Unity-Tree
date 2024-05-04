@@ -1,5 +1,5 @@
 <script setup>
-import { ref} from 'vue'
+import { ref } from 'vue'
 import MemberForm from './MemberForm.vue'
 import TreeComponent from './utilities/TreeComponent.vue';
 import modalComponent from './utilities/modalComponent.vue';
@@ -80,6 +80,9 @@ const handleFormSubmit = (newMember) => {
         data.value.children.push(newMember);
         alertMessage.value = "Child added Successfully!"
         showAlertSuccessModal.value = true
+        setTimeout(() => {
+          showAlertSuccessModal.value = false
+        }, 3000)
     
     } catch (error) {
         alertMessage.value = "Failed to Add member!"
@@ -88,7 +91,14 @@ const handleFormSubmit = (newMember) => {
   }
 }
 
-
+//Show Home Alert Success
+const ShowSuccessAlert = (message) => {
+  alertMessage.value = message
+  showAlertSuccess.value = true
+  setTimeout(() => {
+          showAlertSuccess.value = false
+        }, 3000)
+}
 </script>
 
 <template>
@@ -122,7 +132,7 @@ const handleFormSubmit = (newMember) => {
 
     <!-- The family tree component -->
     <div>
-        <TreeComponent v-model="data"/>
+        <TreeComponent v-model="data" @childDeleted="ShowSuccessAlert"/>
     </div>
 </template>
 
@@ -131,12 +141,33 @@ const handleFormSubmit = (newMember) => {
     position: fixed;
     right: 70px;
     bottom: 50px;
-    z-index: 1;
+    z-index: 100;
 }
 
 .va-modal{
     opacity: 0;
 }
+
+.main-alert{
+  position: fixed;
+  z-index: 1;
+  left: 35%;
+  right: 35%;
+  width: 30%;
+  top: 90%;
+  align-items: center;
+  animation: swell 2s  infinite ease-in-out;
+}
+@keyframes swell {
+  0%, 100% {
+    transform: scale(1); /* Start and end at normal size */
+  }
+
+  50% {
+    transform: scale(1.1); /* At the midpoint of the animation, increase the size */
+  }
+}
+
 
 </style>
 

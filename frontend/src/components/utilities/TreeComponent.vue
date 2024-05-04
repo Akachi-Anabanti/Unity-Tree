@@ -1,20 +1,51 @@
 <script setup>
-  import { nextTick, onMounted, ref, watch} from 'vue';
+  import { nextTick, onMounted, ref, watch, watchEffect} from 'vue';
   import { VueDraggableNext as draggable } from 'vue-draggable-next';
   import memberCard from './memberCard.vue';
 
-  
+  //Delete events
+  const emit = defineEmits(['childDeleted', 'parentDeleted'])
+
   const container = ref(null);
+  const family = defineModel({required:true})
+
+  const showConfirmModal = ref(false)
+  const modalRemovePerson = ref({})
+  const confirmModalDelete = ref(false)
+
+  //options for the modal button
+  const modalButtonOptions = ref({
+    color:"danger",
+    hoverMaskColor:"#ffff"
+  })
+
   onMounted(() => {
     adjustHeight();
   });
 
-  const family = defineModel({required:true})
+  const handleModalOk = async (hide) => {
+    // set modeldelte value
+    confirmModalDelete.value = true
+    hide()
+  }
 
 // Handles Child member removal
-  const deleteChildMember = (index) => {
-    family.value.children.splice(index, 1)    
+  const deleteChildMember = async (person) => {
+    modalRemovePerson.value = person
+    showConfirmModal.value = true
+
   }
+// watch for the confirmation of delete
+watchEffect(() => {
+  if (confirmModalDelete.value){
+    const index = family.value.children.findIndex(child => child === modalRemovePerson.value)
+    if (index !== -1) {
+      family.value.children.splice(index, 1)
+      emit('childDeleted', `${modalRemovePerson.value.name} removed!`)
+    }
+    confirmModalDelete.value = false
+  }
+})
 
 // handles parent Member removal
 const deleteParentMember = (role) => {
@@ -31,7 +62,7 @@ const deleteParentMember = (role) => {
 
   // Adjusts the height of the children stem line
   // based on the number of children
-  async function adjustHeight() {
+function adjustHeight() {
     const cards = container.value.querySelectorAll('.children-card');
     const lastCard = cards[cards.length -1];
     const rectContainer = container.value.getBoundingClientRect();
@@ -43,6 +74,16 @@ const deleteParentMember = (role) => {
 
 
 <template>
+    <VaModal
+      v-model="showConfirmModal"
+      size="auto"
+      okText="Yes"
+      cancelText="No"
+      :child:okButton="modalButtonOptions"
+      :beforeOk="handleModalOk"
+     >
+     Remove <em>{{ modalRemovePerson.name }}</em> from family?
+     </VaModal>
     <div class="tree-container">
         <div class="parent-card-container" >
             <div v-for="(person, role) in family" :key="role" class="parent-card"
@@ -57,7 +98,7 @@ const deleteParentMember = (role) => {
                 <TransitionGroup type="transition" name="flip-list">
                     <div v-for="(person, index) in family.children" :key="index" class="children-card"
                         :class="{'left':index % 2 === 0, 'right':index % 2 === 1} ">
-                        <memberCard  v-bind="person" @removeMember="deleteChildMember(index)"/>
+                        <memberCard  v-bind="person" @removeMember="deleteChildMember(person)"/>
                     </div>
                 </TransitionGroup>
             </draggable>
