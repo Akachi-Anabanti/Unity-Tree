@@ -1,13 +1,15 @@
 <script setup>
 
+    import { ref } from 'vue';
+
 // Alert component properties
-defineProps({
-    showAlertSuccess:{type:Boolean},
-    showAlertFailure:{type:Boolean},
-    showAlertWarning : {type:Boolean},
-    alertMessage: {type:String},
-})
-const isCloseableAlertVisible= defineModel()
+    defineProps({
+        showAlertSuccess:{type:Boolean},
+        showAlertFailure:{type:Boolean},
+        showAlertWarning : {type:Boolean},
+        alertMessage: {type:String},
+    })
+    const isCloseableAlertVisible= ref(true)
 </script>
 
 <template>
@@ -26,7 +28,6 @@ const isCloseableAlertVisible= defineModel()
     <!-- Failure Alert -->
     <VaAlert v-if="showAlertFailure" color="danger"
         closeable
-        close-icon
         v-model="isCloseableAlertVisible"
     >
         <template #icon>
@@ -38,7 +39,6 @@ const isCloseableAlertVisible= defineModel()
     <!-- Warning Alert -->
     <VaAlert v-if="showAlertWarning" color="warning"
         closeable
-        close-icon
         v-model="isCloseableAlertVisible"
     >
         <template #icon>

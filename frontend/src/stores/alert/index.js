@@ -14,7 +14,7 @@ export const useAlertStore = defineStore('alert', ()=>{
     const showModalAlertWarning = ref(false)
 
     const alertMessage = ref("")
-    const isCloseableAlertVisible = ref(true)
+
 
 
 
@@ -67,7 +67,7 @@ export const useAlertStore = defineStore('alert', ()=>{
         showModalAlertFailure.value = true;
         alertMessage.value = message
         setTimeout(() => {
-            showModalAlertWarning.value = false
+            showModalAlertFailure.value = false
           }, 3000)
 
     }
@@ -80,7 +80,6 @@ export const useAlertStore = defineStore('alert', ()=>{
         showModalAlertWarning,
         showModalAlertFailure,
         alertMessage,
-        isCloseableAlertVisible,
         dispatchShowMainAlertSuccess,
         dispatchShowMainAlertWarning,
         dispatchShowMainAlertFailure,
