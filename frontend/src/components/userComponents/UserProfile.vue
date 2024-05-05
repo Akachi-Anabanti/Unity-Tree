@@ -1,7 +1,7 @@
 <script setup>
     import { ref } from 'vue';
     import marqueeComponent from './marqueeComponent.vue';
-    
+    import siblingsComponent from './siblingsComponent.vue';
 
     // user avatar configuration
     const avatarSizeConfig  ={
@@ -55,6 +55,11 @@
         <marqueeComponent />
     </div>
 
+    <div class="siblings">
+        <siblingsComponent />
+    </div>
+
+
 </template>
 
 <style scoped lang="scss">
@@ -103,11 +108,6 @@
     border-bottom: solid 1px black;
 }
 
-
-
-.siblings-section {
-    background-color: aqua;
-}
 .description-section{
     background-color: red;
 }

@@ -19,7 +19,8 @@ import {
     VaDateInput,
     VaAvatar,
     VaAlert,
-    VaImage} from 'vuestic-ui';
+    VaImage,
+    VaCardActions} from 'vuestic-ui';
 
 import 'vuestic-ui/styles/essential.css';
 import 'vuestic-ui/styles/typography.css'
@@ -41,7 +42,7 @@ app.use(router)
 
 app.use(createVuesticEssential({ 
     components: { 
-        VaButton, VaIcon, VaCard, VaCardTitle, VaCardContent,
+        VaButton, VaIcon, VaCard, VaCardTitle, VaCardContent, VaCardActions,
         VaLayout, VaSidebar, VaNavbar, VaNavbarItem, VaSidebarItemTitle, 
         VaSidebarItem, VaSidebarItemContent, VaCarousel, VaConfig, VaModal, VaForm,
     VaInput, VaDateInput, VaCounter,VaOptionList, VaCheckbox, VaSelect, VaFileUpload, VaAvatar,
