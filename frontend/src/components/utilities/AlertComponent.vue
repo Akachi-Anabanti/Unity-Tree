@@ -32,6 +32,7 @@ const isCloseableAlertVisible= defineModel()
         <template #icon>
             <VaIcon name="error" />
         </template>
+        {{ alertMessage }}
     </VaAlert>
 
     <!-- Warning Alert -->
@@ -43,5 +44,6 @@ const isCloseableAlertVisible= defineModel()
         <template #icon>
             <VaIcon name="warning" />
         </template>
+        {{ alertMessage }}
     </VaAlert>
 </template>

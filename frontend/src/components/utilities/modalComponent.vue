@@ -1,16 +1,10 @@
 <script setup>
-import { ref } from 'vue';
 import AlertComponent from './AlertComponent.vue';
+import { useAlertStore } from '@/stores/alert';
 
-const isCloseableAlertVisible = ref(true)
+const useAlert = useAlertStore()
 
-// Modal properties
-defineProps({
-    showAlertFailure: {type:Boolean},
-    showAlertSuccess: {type: Boolean},
-    showAlertWarning: {type: Boolean},
-    alertMessage: {type:String},
-})
+
 
 // two way model link
 const showModal = defineModel({required:true})
@@ -32,11 +26,11 @@ const showModal = defineModel({required:true})
    >
         <template #header>
             <AlertComponent 
-                :showAlertSuccess="showAlertSuccess"
-                :showAlertFailure="showAlertFailure"
-                :showAlertWarning="showAlertWarning"
-                :alertMessage="alertMessage"
-                v-model="isCloseableAlertVisible"
+                :showAlertSuccess="useAlert.showModalAlertSuccess"
+                :showAlertFailure="useAlert.showModalAlertFailure"
+                :showAlertWarning="useAlert.showModalAlertWarning"
+                :alertMessage="useAlert.alertMessage"
+                v-model="useAlert.isCloseableAlertVisible"
             />
         </template>
 

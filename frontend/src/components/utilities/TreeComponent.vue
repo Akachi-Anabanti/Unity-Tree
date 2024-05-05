@@ -1,13 +1,20 @@
 <script setup>
-  import { nextTick, onMounted, ref, watch, watchEffect} from 'vue';
+  import { nextTick, onMounted, reactive, ref, watch, watchEffect} from 'vue';
   import { VueDraggableNext as draggable } from 'vue-draggable-next';
   import memberCard from './memberCard.vue';
+  import { useAlertStore } from '@/stores/alert';
+  import { useFamilyStore } from '@/stores/family';
+// import { storeToRefs } from 'pinia';
+
+  const useAlert = useAlertStore()
+  const useFamily = useFamilyStore()
 
   //Delete events
-  const emit = defineEmits(['childDeleted', 'parentDeleted'])
+  // const emit = defineEmits(['childDeleted', 'parentDeleted'])
 
   const container = ref(null);
-  const family = defineModel({required:true})
+  const family = reactive({})
+  family.value = useFamily.familyData ///BEGIN DEBUGING HERE
 
   const showConfirmModal = ref(false)
   const modalRemovePerson = ref({})
@@ -30,31 +37,45 @@
   }
 
 // Handles Child member removal
-  const deleteChildMember = async (person) => {
+  const promptDelete = (person) => {
     modalRemovePerson.value = person
     showConfirmModal.value = true
 
   }
 // watch for the confirmation of delete
 watchEffect(() => {
-  if (confirmModalDelete.value){
-    const index = family.value.children.findIndex(child => child === modalRemovePerson.value)
-    if (index !== -1) {
-      family.value.children.splice(index, 1)
-      emit('childDeleted', `${modalRemovePerson.value.name} removed!`)
-    }
+  if (confirmModalDelete.value ) {
+      if (modalRemovePerson.value.role === 'child') {
+          const res = useFamily.dispatchDeleteChild(modalRemovePerson.value)
+          if (res.success){
+            const message = `${modalRemovePerson.value.name} removed!`
+            useAlert.dispatchShowMainAlertSuccess(message)
+          } else if (!res.success && res.status === 401){
+            useAlert.dispatchShowMainAlertFailure("Server did not return any response!")
+          } else {
+            useAlert.dispatchShowMainAlertFailure("Something went wrong! :(")
+          }
+        
+      } else {
+          const res = useFamily.dispatchDeleteParent(modalRemovePerson.value)
+
+          if (res.success){
+            const message = `${modalRemovePerson.value.name} removed!`
+            useAlert.dispatchShowMainAlertSuccess(message)
+          } else if (!res.success && res.status === 401) {
+            useAlert.dispatchShowMainAlertFailure("Server did not return any response!")
+          } else {
+            useAlert.dispatchShowMainAlertFailure("Something went wrong! :(")
+          }
+      }
+
     confirmModalDelete.value = false
-  }
+
+  } 
 })
-
-// handles parent Member removal
-const deleteParentMember = (role) => {
-  delete family.value[role];
-}
-
   // Watches for changes in the length of the children value
   watch(
-    () => family.value.children.length,
+    () => useFamily.numberOfChildren,
     () => nextTick(() => {
         adjustHeight()
     })
@@ -88,7 +109,7 @@ function adjustHeight() {
         <div class="parent-card-container" >
             <div v-for="(person, role) in family" :key="role" class="parent-card"
                 :class="{'father': role === 'father', 'mother': role === 'mother'}">
-                <memberCard v-if="role != 'children'" v-bind="person" @removeMember="deleteParentMember(role)"/>
+                <memberCard v-if="role != 'children'" v-bind="person" @removeMember="promptDelete(person)"/>
             </div>
         </div>
         <div class="children-container" ref="container">
@@ -98,7 +119,7 @@ function adjustHeight() {
                 <TransitionGroup type="transition" name="flip-list">
                     <div v-for="(person, index) in family.children" :key="index" class="children-card"
                         :class="{'left':index % 2 === 0, 'right':index % 2 === 1} ">
-                        <memberCard  v-bind="person" @removeMember="deleteChildMember(person)"/>
+                        <memberCard  v-bind="person" @removeMember="promptDelete(person)"/>
                     </div>
                 </TransitionGroup>
             </draggable>

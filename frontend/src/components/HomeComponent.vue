@@ -4,68 +4,14 @@ import MemberForm from './MemberForm.vue'
 import TreeComponent from './utilities/TreeComponent.vue';
 import modalComponent from './utilities/modalComponent.vue';
 import AlertComponent from './utilities/AlertComponent.vue';
+import { useAlertStore } from '@/stores/alert';
+import { useFamilyStore } from '@/stores/family';
 
-// Static data
-const data = ref({
-    "father": {
-      "name": "C-3PO",
-      "dateOfBirth": new Date(1877, 2, 14).toDateString(),
-      "img": "https://randomuser.me/api/portraits/men/1.jpg",
-      "role":"parent"
-    },
-    "mother": {
-      "name": "Luke Skywalker",
-      "dateOfBirth": new Date(1887, 1, 29).toDateString(),
-      "img": "https://randomuser.me/api/portraits/women/5.jpg",
-      "role": "parent"
-    },
-    "children": [
-      {
-        "name": "Obi-Wan Kenobi",
-        "dateOfBirth": new Date(1987, 1, 29).toDateString(),
-        "img": "https://randomuser.me/api/portraits/men/2.jpg",
-        "role": "child"
-      },
-      {
-        "name": "Jabba Desilijic Tiure",
-        "dateOfBirth": new Date(1787, 1, 29).toDateString(),
-        "img": "https://randomuser.me/api/portraits/women/4.jpg",
-        "role": "child"
-      },
-      {
-        "name": "Yoda",
-        "dateOfBirth": new Date(1987, 1, 29).toDateString(),
-        "img": "https://randomuser.me/api/portraits/men/5.jpg",
-        "role": "child"
-      },
-      {
-        "name": "Darth Vader",
-        "dateOfBirth": new Date(1897, 1, 29).toDateString(),
-        "img": "https://randomuser.me/api/portraits/men/6.jpg",
-        "role": "child"
-      },
-      {
-        "name": "Obi-Wan Kenobi",
-        "dateOfBirth": new Date(1887, 1, 29).toDateString(),
-        "img": "https://randomuser.me/api/portraits/men/2.jpg",
-        "role": "child"
-      },
-    ]
-  });
+const useAlert = useAlertStore()
+const useFamily = useFamilyStore()
 
-// Main Alert Modifiers
-const showModal = ref(false);
-const showAlertSuccess = ref(false)
-const showAlertFailure= ref(false)
-const showAlertWarning = ref(false)
 
-// Modal Alert Modifiers
-const showAlertSuccessModal= ref(false)
-const showAlertFailureModal= ref(false)
-const showAlertWarningModal = ref(false)
-
-const alertMessage = ref("")
-const isCloseableAlertVisible = ref(true)
+  const showModal = ref(false);
 
 
 // Function to handle Modal Form Submit
@@ -77,48 +23,33 @@ const handleFormSubmit = (newMember) => {
 
     if (newMember.role === 'child'){
     try {
-        data.value.children.push(newMember);
-        alertMessage.value = "Child added Successfully!"
-        showAlertSuccessModal.value = true
-        setTimeout(() => {
-          showAlertSuccessModal.value = false
-        }, 3000)
+        useFamily.familyData.children.push(newMember);
+        const message = "Child added Successfully!"
+        useAlert.dispatchShowModalAlertSuccess(message)
     
     } catch (error) {
-        alertMessage.value = "Failed to Add member!"
-        showAlertFailureModal.value = true
+        const message = "Failed to Add member!"
+        useAlert.dispatchShowModalAlertFailure(message)
     }
   }
 }
 
-//Show Home Alert Success
-const ShowSuccessAlert = (message) => {
-  alertMessage.value = message
-  showAlertSuccess.value = true
-  setTimeout(() => {
-          showAlertSuccess.value = false
-        }, 3000)
-}
 </script>
 
 <template>
     <!-- Alert component -->
     <div class="main-alert">
         <AlertComponent
-            :alert-message="alertMessage"
-            :show-alert-success="showAlertSuccess"
-            :show-alert-warning="showAlertWarning"
-            :show-alert-failure="showAlertFailure"
-            v-model="isCloseableAlertVisible"
+            :alert-message="useAlert.alertMessage"
+            :show-alert-success="useAlert.showMainAlertSuccess"
+            :show-alert-warning="useAlert.showMainAlertWarning"
+            :show-alert-failure="useAlert.showMainAlertFailure"
+            v-model="useAlert.isCloseableAlertVisible"
         />
     </div>
 
     <!-- Modal Component -->
-    <modalComponent v-model="showModal" 
-        :alert-message="alertMessage"
-        :show-alert-failure="showAlertFailureModal"
-        :show-alert-success="showAlertSuccessModal"
-        :show-alert-warning="showAlertWarningModal"
+    <modalComponent v-model="showModal"
     >
         <template #form>
             <MemberForm  @submit="handleFormSubmit"/>
@@ -131,8 +62,8 @@ const ShowSuccessAlert = (message) => {
     </div>
 
     <!-- The family tree component -->
-    <div>
-        <TreeComponent v-model="data" @childDeleted="ShowSuccessAlert"/>
+    <div v-if="useFamily.hasFamily">
+        <TreeComponent />
     </div>
 </template>
 
