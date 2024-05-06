@@ -8,37 +8,74 @@ import http from '../api'
  * @returns 
  */
 const getFamily = async (memberId) => {
-    return await http.get(`/show-tree/${memberId}`)
+    return await http.get(`/family/${memberId}`)
 }
 
+//creates a family
 const createFamily = async (input) => {
-    return await http.post('/tree', input)
+    return await http.post('/family', input)
 }
 
+// update family info
+const updateFamily = async(familyId, input) => {
+    return await http.put(`/family/${familyId}`, input)
+}
+
+// delete family
+const deleteFamily = async (familyId) => {
+    return await http.delete(`/family/${familyId}`)
+}
+
+//get family member
+// create  family Member
+const getFamilyMember = async(memberId) => {
+    return await http.get(`/family/${memberId}`)
+}
+// create  family Member
+const createFamilyMember = async(familyId, input) => {
+    return await http.post(`/family/${familyId}/create-member`, input)
+}
+// Deletefamily  Member
+const deleteFamilyMember = async (familyId, memberId) => {
+    return await http.delete(`/family/${familyId}/${memberId}`)
+}
+
+// Update family Member
+const updateFamilyMember = async (memberId, input) => {
+    return await http.put(`/family/${memberId}`, input)
+}
+
+// getfamily members
+const getFamilyMembers = async (familyId) => {
+    return await http.get(`/familys/${familyId}`)
+}
+
+// delete family members
+const deleteFamilyMembers = async (familyId) => {
+    return await http.delete(`/family/${familyId}`)
+}
 //get ancestors of a member
-/**
- * @description This is ta wo way recursive call to get parents
- * @param {*} memberId 
- * @returns 
- */
 const getAncestors = async (memberId) => {
-    return await http.get(`/show-tree/ancestors/${memberId}`)
+    return await http.get(`/family/ancestors/${memberId}`)
 }
 
 // get decendants of a member
-/**
- * @description This is a two way recursive call to get parent
- * @param {*} memberId 
- * @returns 
- */
 const getDecendants = async (memberId) => {
-    return await http.get(`/show-tree/decendants/${memberId}`)
+    return await http.get(`/family/decendants/${memberId}`)
 }
 
 
 export default {
     getFamily,
     createFamily,
+    updateFamily,
+    deleteFamily,
+    getFamilyMember,
+    createFamilyMember,
+    updateFamilyMember,
+    deleteFamilyMember,
+    getFamilyMembers,
+    deleteFamilyMembers,
     getAncestors,
     getDecendants
 }

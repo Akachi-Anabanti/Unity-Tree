@@ -1,7 +1,9 @@
 <script setup>
-    import { ref } from 'vue';
     import marqueeComponent from './marqueeComponent.vue';
     import siblingsComponent from './siblingsComponent.vue';
+    import { useFamilyStore } from '@/stores/family';
+
+    const useFamily =  useFamilyStore()
 
     // user avatar configuration
     const avatarSizeConfig  ={
@@ -11,12 +13,7 @@
     }
 
     // static user info
-    const userInfo = ref({
-        "name": "C-3PO",
-        "dateOfBirth": new Date(1877, 2, 14).toDateString(),
-        "img": "https://randomuser.me/api/portraits/men/1.jpg",
-        "role":"parent"
-    })
+    const userInfo = useFamily.memberInfo
 
     // calculates the users birthday
     function calculateAge(dateOfBirth) {

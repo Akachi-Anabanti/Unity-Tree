@@ -15,23 +15,20 @@ const useFamily = useFamilyStore()
 
 
 // Function to handle Modal Form Submit
-const handleFormSubmit = (newMember) => {
-
-    if (newMember.dateOfBirth){
-          newMember.dateOfBirth = newMember.dateOfBirth.toDateString()
-      }
-
-    if (newMember.role === 'child'){
-    try {
-        useFamily.familyData.children.push(newMember);
-        const message = "Child added Successfully!"
+const handleFormSubmit = async (newMember) => {
+    await useFamily.dispatchCreateFamilyMember(useFamily.getFamilyId, newMember)
+    .then((res) => {
+      console.log(res)
+      if (res.success) {
+        const message = `${newMember.firstName} added successfully as ${newMember.role}!`
         useAlert.dispatchShowModalAlertSuccess(message)
-    
-    } catch (error) {
+      } else {
         const message = "Failed to Add member!"
         useAlert.dispatchShowModalAlertFailure(message)
-    }
-  }
+      }
+    }).catch((error) => {
+      console.error(error)
+    })
 }
 
 </script>
@@ -44,7 +41,6 @@ const handleFormSubmit = (newMember) => {
             :show-alert-success="useAlert.showMainAlertSuccess"
             :show-alert-warning="useAlert.showMainAlertWarning"
             :show-alert-failure="useAlert.showMainAlertFailure"
-            v-model="useAlert.isCloseableAlertVisible"
         />
     </div>
 
@@ -57,13 +53,16 @@ const handleFormSubmit = (newMember) => {
     </modalComponent>
 
     <!-- Add member button -->
-    <div class="flex items-center gap-8 flex-wrap add-member">
+    <div v-if="!useFamily.hasFamily" class="flex items-center gap-8 flex-wrap add-member">
         <VaButton round icon="va-plus" size="large" @click="showModal = true"/>
     </div>
 
     <!-- The family tree component -->
     <div v-if="useFamily.hasFamily">
         <TreeComponent />
+    </div>
+    <div v-else>
+      START BY CREATING A FAMILY
     </div>
 </template>
 

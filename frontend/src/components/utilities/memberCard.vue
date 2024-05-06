@@ -1,16 +1,10 @@
-<template>
-  <VaCard :bordered="false">
-    <VaIcon name="delete" size="large" @click="handleRemove" color="danger"/>
-    <div class="card-avatar">
-      <VaAvatar :src="person.img" size="large"/>
-    </div>
-    <VaCardTitle class="mb-4">{{ person.name }}</VaCardTitle>
-    <VaCardContent>{{ person.dateOfBirth }}</VaCardContent>
-  </VaCard>
-</template>
-
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
  const person = defineProps({
+  id:{type:String, required:true},
   img: {type: String, required: true},
   name: {type: String, required:true},
   dateOfBirth: { type: String, required: true},
@@ -18,30 +12,35 @@
   
  })
 
-//  function formatDate(date) {
-//   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-//   let formattedDate = date.toLocaleDateString('en-GB', options);
-  
-//   // Add the ordinal suffix
-//   let day = date.getDate();
-//   if (day % 10 == 1 && day != 11) {
-//     formattedDate = formattedDate.replace(day, day + 'st');
-//   } else if (day % 10 == 2 && day != 12) {
-//     formattedDate = formattedDate.replace(day, day + 'nd');
-//   } else if (day % 10 == 3 && day != 13) {
-//     formattedDate = formattedDate.replace(day, day + 'rd');
-//   } else {
-//     formattedDate = formattedDate.replace(day, day + 'th');
-//   }
-  
-//   return formattedDate;
-// }
-
-  const emit = defineEmits(['removeMember'])
+  const emit = defineEmits(['removeMember', 'cardClick'])
   const handleRemove = () => {
     emit('removeMember')
   }
+  const handleCardClick = () => {
+    emit('cardClick', person.id)
+  }
+
+  const handleProfileClick = () =>{
+
+    router.push({ name: 'Profile', params: { id: person.id } })
+  }
+
+
+
 </script>
+
+
+
+<template>
+  <VaCard :bordered="false" @click="handleCardClick">
+    <VaIcon name="delete" size="large" @click.stop="handleRemove" color="danger"/>
+    <div class="card-avatar">
+      <VaAvatar :src="person.img" size="large" @click.stop="handleProfileClick"/>
+    </div>
+    <VaCardTitle class="mb-4">{{ person.name }}</VaCardTitle>
+    <VaCardContent>{{ person.dateOfBirth }}</VaCardContent>
+  </VaCard>
+</template>
 
 <style scoped>
 .va-card {

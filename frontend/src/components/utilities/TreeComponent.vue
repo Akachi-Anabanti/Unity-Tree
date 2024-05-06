@@ -1,23 +1,24 @@
 <script setup>
-  import { nextTick, onMounted, reactive, ref, watch, watchEffect} from 'vue';
+  import { nextTick, onUpdated, onMounted, ref, watch, watchEffect} from 'vue';
   import { VueDraggableNext as draggable } from 'vue-draggable-next';
   import memberCard from './memberCard.vue';
   import { useAlertStore } from '@/stores/alert';
   import { useFamilyStore } from '@/stores/family';
-// import { storeToRefs } from 'pinia';
+  import { useUserStore } from '@/stores/user';
+
 
   const useAlert = useAlertStore()
   const useFamily = useFamilyStore()
+  const userStore = useUserStore()
 
-  //Delete events
-  // const emit = defineEmits(['childDeleted', 'parentDeleted'])
+  //memberId
 
   const container = ref(null);
-  const family = reactive({})
-  family.value = useFamily.familyData ///BEGIN DEBUGING HERE
+  const family = useFamily.familyData
 
   const showConfirmModal = ref(false)
   const modalRemovePerson = ref({})
+  const modalRemovePersonFamId = ref("")
   const confirmModalDelete = ref(false)
 
   //options for the modal button
@@ -26,8 +27,17 @@
     hoverMaskColor:"#ffff"
   })
 
-  onMounted(() => {
-    adjustHeight();
+  onMounted( async() => {
+    
+    await useFamily.dispatchGetFamily(userStore.user.id)
+    .then(() =>{
+    }).catch((error) =>{
+      console.error(error)
+    })
+
+    if (useFamily.hasFamily && useFamily.numberOfChildren != 0){
+      adjustHeight();
+    }
   });
 
   const handleModalOk = async (hide) => {
@@ -37,42 +47,42 @@
   }
 
 // Handles Child member removal
-  const promptDelete = (person) => {
+  const promptDelete = (person, family) => {
     modalRemovePerson.value = person
+    modalRemovePersonFamId.value = family.id
     showConfirmModal.value = true
 
   }
-// watch for the confirmation of delete
-watchEffect(() => {
-  if (confirmModalDelete.value ) {
-      if (modalRemovePerson.value.role === 'child') {
-          const res = useFamily.dispatchDeleteChild(modalRemovePerson.value)
-          if (res.success){
-            const message = `${modalRemovePerson.value.name} removed!`
-            useAlert.dispatchShowMainAlertSuccess(message)
-          } else if (!res.success && res.status === 401){
-            useAlert.dispatchShowMainAlertFailure("Server did not return any response!")
-          } else {
-            useAlert.dispatchShowMainAlertFailure("Something went wrong! :(")
-          }
-        
-      } else {
-          const res = useFamily.dispatchDeleteParent(modalRemovePerson.value)
 
-          if (res.success){
-            const message = `${modalRemovePerson.value.name} removed!`
-            useAlert.dispatchShowMainAlertSuccess(message)
-          } else if (!res.success && res.status === 401) {
-            useAlert.dispatchShowMainAlertFailure("Server did not return any response!")
-          } else {
-            useAlert.dispatchShowMainAlertFailure("Something went wrong! :(")
-          }
-      }
 
-    confirmModalDelete.value = false
+  // watches for the change in value of confirmModal.delte value
+  // and sends the dispatches
+  watchEffect(()=>{
+    if (confirmModalDelete.value){
+      useFamily.dispatchDeleteFamilyMember(modalRemovePersonFamId, modalRemovePerson.value.id)
+      .then((res) =>{
+        if(res.success) {
+          const message = `${modalRemovePerson.value.name} removed!`;
+          useAlert.dispatchShowMainAlertSuccess(message);
+        }else if (!res.success && res.status === 401){
+          useAlert.dispatchShowMainAlertFailure('Server did not return any response!')
 
-  } 
-})
+        } else {
+          useAlert.dispatchShowMainAlertFailure("Something went wrong! :(");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        useAlert.dispatchShowMainAlertFailure("Something went wrong! :(")
+      });
+
+      confirmModalDelete.value = !confirmModalDelete.value
+    }
+  });
+  //tries to recalulate height
+  onUpdated(() => {
+    adjustHeight()
+  })
   // Watches for changes in the length of the children value
   watch(
     () => useFamily.numberOfChildren,
@@ -91,6 +101,16 @@ function adjustHeight() {
     const height = rectContainer.height - (rectLastCard.height / 2);
     container.value.style.setProperty('--dynamic-height', `${height}px`);
   }
+
+async function getMemberFamily (memberId) {
+    // Fetch the new family data based on memberId
+    await useFamily.dispatchGetFamily(memberId)
+    .then(() =>{
+    }).catch((error) =>{
+      console.error(error)
+    })
+
+}
 </script>
 
 
@@ -109,7 +129,7 @@ function adjustHeight() {
         <div class="parent-card-container" >
             <div v-for="(person, role) in family" :key="role" class="parent-card"
                 :class="{'father': role === 'father', 'mother': role === 'mother'}">
-                <memberCard v-if="role != 'children'" v-bind="person" @removeMember="promptDelete(person)"/>
+                <memberCard v-if="role != 'children'" v-bind="person" @removeMember="promptDelete(person, family)"/>
             </div>
         </div>
         <div class="children-container" ref="container">
@@ -119,7 +139,8 @@ function adjustHeight() {
                 <TransitionGroup type="transition" name="flip-list">
                     <div v-for="(person, index) in family.children" :key="index" class="children-card"
                         :class="{'left':index % 2 === 0, 'right':index % 2 === 1} ">
-                        <memberCard  v-bind="person" @removeMember="promptDelete(person)"/>
+                        <memberCard  v-bind="person" @removeMember="promptDelete(person, family)"
+                          @cardClick="getMemberFamily"/>
                     </div>
                 </TransitionGroup>
             </draggable>

@@ -30,7 +30,6 @@ const showModal = defineModel({required:true})
                 :showAlertFailure="useAlert.showModalAlertFailure"
                 :showAlertWarning="useAlert.showModalAlertWarning"
                 :alertMessage="useAlert.alertMessage"
-                v-model="useAlert.isCloseableAlertVisible"
             />
         </template>
 
