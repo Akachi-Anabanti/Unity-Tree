@@ -1,14 +1,20 @@
+import { useAlertStore } from '@/stores/alert';
+import { useAuthStore } from '@/stores/auth';
 import { createRouter, createWebHistory} from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import accountRoute from './account';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  linkActiveClass:'active',
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: ()=> import('../views/HomeView.vue')
     },
+    // Accounts route set up
+    { ...accountRoute},
     {
       path: '/about',
       name: 'about',
@@ -22,7 +28,25 @@ const router = createRouter({
       name: 'profile',
       component : () => import('../views/UserView.vue')
     },
+    {path : '/:pathMatch(.*)*', redirect:'/'}
+
   ]
+});
+
+router.beforeEach(async(to) => {
+  //clear alerts on route change
+  useAlertStore().$reset
+
+  const publicPages =['/account/login', '/account/register', '/about']
+  const authRequired = !publicPages.includes(to.path);
+
+  const authStore = useAuthStore();
+
+  if (authRequired && !authStore.isAuthenticated) {
+      authStore.returnUrl = to.fullPath;
+      return '/account/login';
+  }
 })
+
 
 export default router

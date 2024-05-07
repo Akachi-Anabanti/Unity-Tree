@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
  const person = defineProps({
-  id:{type:String, required:true},
+  id:{type:String},
   img: {type: String, required: true},
   name: {type: String, required:true},
   dateOfBirth: { type: String, required: true},

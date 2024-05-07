@@ -1,8 +1,11 @@
 <script setup>
+// import { useAuthStore } from '@/stores/auth';
 import { ref } from 'vue';
-
+// const authStore = useAuthStore()
 const email = ref("")
 const  password = ref("")
+
+// const {dispatchLogin} = authStore
 
 </script>
 
@@ -33,4 +36,10 @@ const  password = ref("")
         </template>
       </VaInput>
     </VaValue>
+    <VaButton>
+      <router-link to="register">
+        Register
+      </router-link>
+    </VaButton>
+    
 </template>

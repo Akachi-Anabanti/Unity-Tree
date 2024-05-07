@@ -1,6 +1,5 @@
 import http from '../api'
 
-
 //get a member family tree
 /**
  * 
@@ -29,11 +28,11 @@ const deleteFamily = async (familyId) => {
 //get family member
 // create  family Member
 const getFamilyMember = async(memberId) => {
-    return await http.get(`/family/${memberId}`)
+    return await http.get(`/family/member/${memberId}`)
 }
 // create  family Member
 const createFamilyMember = async(familyId, input) => {
-    return await http.post(`/family/${familyId}/create-member`, input)
+    return await http.post(`/family/member/${familyId}`, input)
 }
 // Deletefamily  Member
 const deleteFamilyMember = async (familyId, memberId) => {
@@ -47,12 +46,12 @@ const updateFamilyMember = async (memberId, input) => {
 
 // getfamily members
 const getFamilyMembers = async (familyId) => {
-    return await http.get(`/familys/${familyId}`)
+    return await http.get(`/family/members/${familyId}`)
 }
 
 // delete family members
 const deleteFamilyMembers = async (familyId) => {
-    return await http.delete(`/family/${familyId}`)
+    return await http.delete(`/family/members/${familyId}`)
 }
 //get ancestors of a member
 const getAncestors = async (memberId) => {

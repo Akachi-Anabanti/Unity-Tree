@@ -1,0 +1,130 @@
+.flip-list-move {
+transition: transform 0.5s;
+}
+.no-move {
+transition: transform 0s;
+}
+
+.ghost {
+opacity: 0.5;
+background: #c8ebfb;
+}
+
+.tree-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 90%;
+height: 90%;
+margin: auto;
+}
+
+.parent-card-container::after {
+content: "";
+position: absolute;
+top: 50%;
+bottom: 0;
+left: 50%;
+border-left: 1px solid black;
+}
+
+
+.parent-card-container::before,
+.parent-card-container::after {
+content: "";
+/* flex: 1; */
+}
+
+.parent-card-container {
+display: flex;
+flex-direction: row;
+justify-content: space-around;
+align-items: center;
+position: relative;
+width: 100%;
+}
+
+.parent-card {
+margin: 10px;
+position: relative;
+}
+
+.parent-card.father {
+margin-right: 5rem;
+}
+
+.parent-card.mother {
+margin-left: 5rem;
+}
+
+.parent-card.father::after {
+content: "";
+position: absolute;
+top: 50%;
+right: -10.4rem;
+width: 10.4rem;
+border-top: 1px solid black;
+}
+
+.parent-card.mother::before {
+content: "";
+position: absolute;
+top: 50%;
+left: -10.4rem;
+width: 10.4rem;
+border-top: 1px solid black;
+}
+
+
+.children-container{
+display: flex;
+flex-direction: column;
+justify-content: space-around;
+position: relative;
+/* width: inherit; */
+}
+
+.children-card {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin: 0.5em;
+width: auto;
+position: relative;
+}
+
+.children-card.left {
+align-self: flex-start;
+right: 10rem;
+}
+
+.children-card.right {
+align-self: flex-end;
+left: 10rem;
+}
+
+.children-container::before {
+content: "";
+position: absolute;
+top: 0;
+bottom: calc(100% - var(--dynamic-height));
+left: 50%;
+border-left: 1px solid black;
+}
+
+.children-card.right::before {
+content: "";
+position: absolute;
+top: 50%;
+left: -4rem;
+width: 4rem;
+border-top: 1px solid black;
+}
+.children-card.left::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -4.1rem;
+    width: 4.1rem;
+    border-top: 1px solid black;
+}
