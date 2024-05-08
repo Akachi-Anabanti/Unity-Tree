@@ -19,5 +19,6 @@ class Media(BaseModel, db.Model):
 
     family_id = so.mapped_column(sa.String(255), sa.ForeignKey("Family.id"))
     member_id = so.mapped_column(sa.String(255), sa.ForeignKey("Member.id"))
+    user_id = so.mapped_column(sa.String(255), sa.ForeignKey("User.id"))
     family = so.relationship("Family", back_populates="media")
-    person = so.relationship("PersonInfo", back_populates="media")
+    # person = so.relationship("PersonInfo", back_populates="media")

@@ -25,8 +25,60 @@ class PersonInfoMixin:
         return sa.Column(sa.DATE, nullable=True)
 
     @so.declared_attr
-    def media(cls):
-        return so.relationship("Media", back_populates="person")
+    def height(cls):
+        return so.mapped_column(sa.String(60), nullable=True)
+
+    @so.declared_attr
+    def hobbies(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def marital_status(cls):
+        return so.mapped_column(sa.Boolean, default=False)
+
+    @so.declared_attr
+    def ethnicity(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def race(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def state_of_origin(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def nationality(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def occupation(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def nickname(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def genotype(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def blood_group(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def title(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def skin_color(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
+
+    @so.declared_attr
+    def gender(cls):
+        return so.mapped_column(sa.String(120), nullable=True)
 
 
 class User(PersonInfoMixin, BaseModel, db.Model):
@@ -34,7 +86,13 @@ class User(PersonInfoMixin, BaseModel, db.Model):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120))
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(256))
-    member = so.relationship("Member", uselist=False, back_populates="user")
+    member = so.relationship(
+        "Member", uselist=False, back_populates="user", viewonly=True
+    )
+    # media = so.relationship("Media", back_populates="user")
+
+    # def __init__(self):
+    #     self.set_password(self.password)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -49,7 +107,7 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
     user_id: so.Mapped[str] = so.mapped_column(
         sa.String(255), sa.ForeignKey("User.id"), nullable=True
     )
-    user = so.relationship("User", backref="member")
+    user = so.relationship("User", backref="related_member")
     families = so.relationship(
         "FamilyMember", back_populates="member", cascade="all, delete-orphan"
     )

@@ -1,8 +1,8 @@
-"""empty message
+"""initial migration
 
-Revision ID: 0fd5fb22aff7
+Revision ID: e529a984d1fa
 Revises: 
-Create Date: 2024-05-08 00:31:12.334706
+Create Date: 2024-05-08 02:31:39.849054
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0fd5fb22aff7'
+revision = 'e529a984d1fa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,6 +32,20 @@ def upgrade():
     sa.Column('first_name', sa.String(length=120), nullable=True),
     sa.Column('last_name', sa.String(length=120), nullable=True),
     sa.Column('date_of_birth', sa.DATE(), nullable=True),
+    sa.Column('height', sa.String(length=60), nullable=True),
+    sa.Column('hobbies', sa.String(length=120), nullable=True),
+    sa.Column('marital_status', sa.Boolean(), nullable=True),
+    sa.Column('ethnicity', sa.String(length=120), nullable=True),
+    sa.Column('race', sa.String(length=120), nullable=True),
+    sa.Column('state_of_origin', sa.String(length=120), nullable=True),
+    sa.Column('nationality', sa.String(length=120), nullable=True),
+    sa.Column('occupation', sa.String(length=120), nullable=True),
+    sa.Column('nickname', sa.String(length=120), nullable=True),
+    sa.Column('genotype', sa.String(length=120), nullable=True),
+    sa.Column('blood_group', sa.String(length=120), nullable=True),
+    sa.Column('title', sa.String(length=120), nullable=True),
+    sa.Column('skin_color', sa.String(length=120), nullable=True),
+    sa.Column('gender', sa.String(length=120), nullable=True),
     sa.Column('id', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -44,6 +58,20 @@ def upgrade():
     sa.Column('first_name', sa.String(length=120), nullable=True),
     sa.Column('last_name', sa.String(length=120), nullable=True),
     sa.Column('date_of_birth', sa.DATE(), nullable=True),
+    sa.Column('height', sa.String(length=60), nullable=True),
+    sa.Column('hobbies', sa.String(length=120), nullable=True),
+    sa.Column('marital_status', sa.Boolean(), nullable=True),
+    sa.Column('ethnicity', sa.String(length=120), nullable=True),
+    sa.Column('race', sa.String(length=120), nullable=True),
+    sa.Column('state_of_origin', sa.String(length=120), nullable=True),
+    sa.Column('nationality', sa.String(length=120), nullable=True),
+    sa.Column('occupation', sa.String(length=120), nullable=True),
+    sa.Column('nickname', sa.String(length=120), nullable=True),
+    sa.Column('genotype', sa.String(length=120), nullable=True),
+    sa.Column('blood_group', sa.String(length=120), nullable=True),
+    sa.Column('title', sa.String(length=120), nullable=True),
+    sa.Column('skin_color', sa.String(length=120), nullable=True),
+    sa.Column('gender', sa.String(length=120), nullable=True),
     sa.Column('id', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -63,11 +91,13 @@ def upgrade():
     sa.Column('file_type', sa.String(), nullable=False),
     sa.Column('family_id', sa.String(length=255), nullable=True),
     sa.Column('member_id', sa.String(length=255), nullable=True),
+    sa.Column('user_id', sa.String(length=255), nullable=True),
     sa.Column('id', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['family_id'], ['Family.id'], ),
     sa.ForeignKeyConstraint(['member_id'], ['Member.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['User.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

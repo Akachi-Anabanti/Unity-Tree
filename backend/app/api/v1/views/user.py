@@ -8,3 +8,10 @@ from flask_jwt_extended import jwt_required
 @jwt_required(optional=True)
 def ping():
     return jsonify({"message": "Pong"}), 200
+
+
+@bp.route("/user/")
+@jwt_required()
+def get_user():
+    user = current_user.to_dict()
+    return jsonify(user), 200

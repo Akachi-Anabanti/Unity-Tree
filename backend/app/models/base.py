@@ -55,6 +55,6 @@ class BaseModel:
 
         new_dict["__class__"] = self.__class__.__name__
 
-        if "_sa_instnace_state" in new_dict:
+        if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
         return new_dict

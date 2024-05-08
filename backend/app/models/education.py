@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Informatio  about the members education"""
 
+
 class Education(Base):
 
     tablename = "educations"
