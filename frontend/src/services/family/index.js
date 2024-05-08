@@ -36,12 +36,12 @@ const createFamilyMember = async(familyId, input) => {
 }
 // Deletefamily  Member
 const deleteFamilyMember = async (familyId, memberId) => {
-    return await http.delete(`/family/${familyId}/${memberId}`)
+    return await http.delete(`/family/member/${familyId}/${memberId}`)
 }
 
 // Update family Member
 const updateFamilyMember = async (memberId, input) => {
-    return await http.put(`/family/${memberId}`, input)
+    return await http.put(`/family/member/${memberId}`, input)
 }
 
 // getfamily members

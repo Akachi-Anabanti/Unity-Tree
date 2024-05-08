@@ -63,6 +63,34 @@ export const useAuthStore = defineStore('auth', ()=>{
         logout()
     }
 
+
+    async function dispatchRegister(info){
+        try {
+            const {status} = await API.auth.register(info)
+            if(status == 201){
+                const credentials = {
+                    password: info.password,
+                    email: info.email
+                }
+                // if registration is successful automatically login
+                //  user and update
+                dispatchLogin(credentials)
+            }
+        } catch (error) {
+            return {
+                success:false,
+                content:null,
+                status:error.response?.status
+            }
+            
+        }
+        return {
+            success:false,
+            content:null,
+            status:401
+        }
+
+    }
     return {
         token,
         returnUrl,
@@ -71,7 +99,8 @@ export const useAuthStore = defineStore('auth', ()=>{
         currentUser,
         setToken,
         dispatchLogin,
-        dispatchLogout
+        dispatchLogout,
+        dispatchRegister
 
     }
 })

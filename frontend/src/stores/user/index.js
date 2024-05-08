@@ -16,35 +16,6 @@ export const useUserStore = defineStore('userStore', () =>{
 
     // }
 
-    // creates the user and updates the users list
-    async function dispatchCreateUser (input){
-        try {
-
-            const {status} = await API.users.createUser(input);
-            if(status == 200){
-                // addNewUser(data)
-                return {
-                    success: true,
-                    content: null
-                }
-            }
-            
-        } catch (error) {
-
-            return {
-                success: false,
-                status: error.response?.status,
-                content: null
-            }
-            
-        }
-        return {
-            success:false,
-            content:null,
-            status: 400
-        }
-    }
-
     // deletes a user from the db and updates the state
     async function dispatchDeleteUser(id){
         try {
@@ -106,7 +77,6 @@ export const useUserStore = defineStore('userStore', () =>{
     }
 
     return {
-        dispatchCreateUser,
         dispatchDeleteUser,
         dispatchUpdateUser
     }
