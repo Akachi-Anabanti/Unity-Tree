@@ -27,7 +27,8 @@ class FamilyMember(BaseModel, db.Model):
 
     @classmethod
     def get_family_member(cls, member_id):
-        return cls.query.filter_by(member_id=member_id).one_or_none()
+        member = cls.query.filter_by(member_id=member_id).one_or_none()
+        return member.member
 
     @classmethod
     def get_family_by_member_id(cls, member_id):

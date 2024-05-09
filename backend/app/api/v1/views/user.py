@@ -40,7 +40,7 @@ def user_update(user_id):
     if not user:
         return not_found("User does not exist")
     user.update_user(**request.json)
-    db.session.add(user)
+    db.session.flush()
     db.session.commit()
 
-    return jsonify(user.to_dict())
+    return user.to_dict()

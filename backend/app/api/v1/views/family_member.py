@@ -168,8 +168,8 @@ def update_family_member(member_id):
         return not_found("Member not found")
 
     member.update_member(**request.json)
-    db.session.add(member)
     db.session.commit()
+    return member.basic_info_dict()
 
 
 # DELETE ROUTES

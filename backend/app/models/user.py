@@ -104,6 +104,7 @@ class User(PersonInfoMixin, BaseModel, db.Model):
 
     def update_user(self, **kwargs):
         self.update(**kwargs)
+        return self
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -125,6 +126,7 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
 
     def update_member(self, **kwargs):
         self.update(**kwargs)
+        return self
 
     @classmethod
     def get_family(cls, member_id):

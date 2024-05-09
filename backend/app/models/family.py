@@ -25,11 +25,15 @@ class Family(BaseModel, db.Model):
         if family:
             children = []
             parents = {}
-            for member in family:
+            for member in family.members:
                 if member.Role == "father" or member.Role == "mother":
-                    parents[member.Role] = member.to_dict()
+
+                    parents[member.Role] = (
+                        member.member.basic_info_dict()
+                    )  # calls the member models basic_info_dict
                 else:
-                    children.append(member.to_dict())
+                    children.append(member.member.basic_info_dict())
+                    # calls the member models basic_info_dict
             members_dict = parents.copy()
             members_dict["children"] = children
             return members_dict

@@ -6,6 +6,7 @@ import uuid
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
+
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
 
@@ -44,22 +45,42 @@ class BaseModel:
         """String representation of BaseModel"""
         return "[{:s}]({:s}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
+    # def to_dict(self):
+    #     """returns a dictionary containing the key value pairs"""
+    #     new_dict = self.__dict__.copy()
+    #     if "created_at" in new_dict:
+    #         new_dict["created_at"] = new_dict["created_at"].strftime(time)
+
+    #     if "updated_at" in new_dict:
+    #         new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
+
+    #     new_dict["__class__"] = self.__class__.__name__
+
+    #     if "_sa_instance_state" in new_dict:
+    #         del new_dict["_sa_instance_state"]
+    #     if "passwrod_hash" in new_dict:
+    #         del new_dict["password_hash"]
+    #     return new_dict
+
     def to_dict(self):
-        """returns a dictionary containing the key value pairs"""
-        new_dict = self.__dict__.copy()
-        if "created_at" in new_dict:
-            new_dict["created_at"] = new_dict["created_at"].strftime(time)
+        """returns a dictionary containing all SQLAlchemy columns"""
+        class_dict = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        if "password_hash" in class_dict:
+            del class_dict["password_hash"]
+        return class_dict
 
-        if "updated_at" in new_dict:
-            new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
+    def basic_info_dict(self):
+        """returns a dictionary containing basic details"""
 
-        new_dict["__class__"] = self.__class__.__name__
-
-        if "_sa_instance_state" in new_dict:
-            del new_dict["_sa_instance_state"]
-        return new_dict
+        basic_details = ["id", "first_name", "last_name", "gender", "dob"]
+        return {
+            c.name: getattr(self, c.name)
+            for c in self.__table__.columns
+            if c.name in basic_details
+        }
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
+        self.updated_at = datetime.now(timezone.utc)
