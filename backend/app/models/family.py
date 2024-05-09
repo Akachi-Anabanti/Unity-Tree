@@ -12,24 +12,35 @@ class Family(BaseModel, db.Model):
     name: so.Mapped[str] = so.mapped_column(sa.String(125))
     members = so.relationship("FamilyMember", back_populates="family")
     media = so.relationship("Media", back_populates="family")
+    creator_id = so.mapped_column(
+        sa.String(255), sa.ForeignKey("User.id", name="fk_creator_id"), nullable=False
+    )
+
+    creator = db.relationship("User", back_populates="families_created")
 
     @classmethod
     def get_family_members(cls, family_id):
         family = cls.query.filter_by(id=family_id).one_or_none()
 
-        if family is None:
-            return None
+        if family:
+            children = []
+            parents = {}
+            for member in family:
+                if member.Role == "father" or member.Role == "mother":
+                    parents[member.Role] = member.to_dict()
+                else:
+                    children.append(member.to_dict())
+            members_dict = parents.copy()
+            members_dict["children"] = children
+            return members_dict
+        # return [assoc.members for assoc in family.members]
+        return None
 
-        members = [assoc.members for assoc in family.members]
-        children = []
-        parents = {}
+    @classmethod
+    def create_family(cls, name, creator_id):
+        new_family = cls(name=name, creator_id=creator_id)
+        return new_family
 
-        for member in members:
-            if member.Role == "father" or member.Role == "mother":
-                parents[member.Role] = member.to_dict()
-            else:
-                children.append(member.to_dict())
-
-        members_dict = parents.copy()
-        members_dict["children"] = children
-        return members_dict
+    def update_family(self, **kwargs):
+        self.update(**kwargs)
+        return self

@@ -14,6 +14,7 @@ from flask_jwt_extended import (
     create_access_token,
     get_jwt,
     get_jwt_identity,
+    jwt_required,
     set_access_cookies,
     unset_jwt_cookies,
 )
@@ -42,7 +43,8 @@ def refresh_expiring_jwts(response):
         now = datetime.now(timezone.utc)
         target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
         if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
+            user = models.User.query.get(get_jwt_identity())
+            access_token = create_access_token(identity=user)
             set_access_cookies(response, access_token)
         return response
     except (RuntimeError, KeyError):
@@ -75,6 +77,7 @@ def login():
 
 
 @api_v1_bp.route("/logout", methods=["POST"])
+@jwt_required()
 def logout():
     response = jsonify({"message": "logout successful"})
     unset_jwt_cookies(response)
@@ -92,17 +95,15 @@ def register():
     if not is_email_valid(email, check_deliverability=True):
         return Unauthorized("email is not valid, please use a valid email address")
 
-    user = models.User.query.filter_by(email=email).one_or_none()
-
-    if user:
-        response = jsonify({"message": "User already exist"})
+    new_user = models.User().create_user(
+        username=username, email=email, password=password
+    )
+    if new_user is None:
+        response = jsonify({"message": "User already exists"})
         return response, 204
 
-    user = models.User(username=username, email=email)
-    user.set_password(password)
-    db.session.add(user)
+    db.session.add(new_user)
     db.session.commit()
-
     response = jsonify({"message": "Registeration successfuly"})
     return response, 201
 
@@ -121,11 +122,15 @@ def register_member(member_id):
     email = request.json.get("email")
     password = request.json.get("password")
 
-    if not is_email_valid(email, check_deliverability=True):
-        return Unauthorized("email is not valid, please use a valid email address")
-    user = models.User(username=username, email=email)
-    user.set_password(password)
-    member.user = user
+    new_user = models.User.create_user(
+        username=username, email=email, password=password
+    )
+
+    if new_user is None:
+        response = jsonify({"message": "User already exists"})
+        return response, 204
+
+    member.user = new_user
     member.registered = True
     db.session.commit()
 
