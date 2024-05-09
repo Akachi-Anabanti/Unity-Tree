@@ -11,8 +11,13 @@ const register = async(info) => {
     return await http.post('/register', info)
 }
 
+const logout = async() => {
+    return await http.post('/logout')
+}
+
 
 export default {
     login,
-    register
+    register,
+    logout
 }

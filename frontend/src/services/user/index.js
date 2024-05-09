@@ -1,8 +1,8 @@
 import http from '../api'
 
 // get a single user
-const getUser = async (id) => {
-    return await http.get(`user/${id}`)
+const getUser = async () => {
+    return await http.get(`user/`)
 }
 
 //delete user

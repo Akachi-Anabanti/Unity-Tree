@@ -1,20 +1,40 @@
 import { API } from "@/services";
 import { defineStore } from "pinia";
+import { useAuthStore } from "../auth";
 
 
 export const useUserStore = defineStore('userStore', () =>{
 
+    const authStore = useAuthStore()
 
 
-    // // function to remove user from state
-    // const deleteUser = (id) => {
+    async function dispatchGetUser(){
+        try {
 
-    // }
+            const {status, data} = await API.users.getUser();
+            if(status == 200){
+                return {
+                    success: true,
+                    content: data
+                }
+            }
+            
+        } catch (error) {
 
-    // // updates the user value in state
-    // const updateUser = (id, data) => {
+            return {
+                success: false,
+                status: error.response?.status,
+                content: null
+            }
+            
+        }
 
-    // }
+        return {
+            success:false,
+            content:null,
+            status:400
+        }
+    }
 
     // deletes a user from the db and updates the state
     async function dispatchDeleteUser(id){
@@ -22,7 +42,7 @@ export const useUserStore = defineStore('userStore', () =>{
 
             const {status} = await API.users.deleteUser(id);
             if(status == 200){
-                // removeUser(id)
+                authStore.dispatchLogout()
                 return {
                     success: true,
                     content: null
@@ -77,6 +97,7 @@ export const useUserStore = defineStore('userStore', () =>{
     }
 
     return {
+        dispatchGetUser,
         dispatchDeleteUser,
         dispatchUpdateUser
     }

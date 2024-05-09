@@ -2,44 +2,44 @@ import router from "@/router";
 import { API } from "@/services";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { useUserStore } from "../user";
 
 export const useAuthStore = defineStore('auth', ()=>{
 
+    const userStore = useUserStore()
 
-    const isAuthenticated = computed(() => !!accesToken.value);
+    const loggedIn = ref(false)
+
+    const isAuthenticated = computed(() => loggedIn.value);
     const isSuperUser = ref(false)
-    const currentUser = ref({})
+    const currentUser = ref(null)
     const returnUrl = ref(null)
-    const accesToken = ref(null)
-
-    const token = computed(() => accesToken.value)
-
-    const setToken = (tk) => {
-        token.value = tk
-        localStorage.setItem('token', JSON.stringify(tk))
-    }
 
     const setUser = (user) => {
         currentUser.value = user
     }
 
-    const login = (token, user) =>{
+    const login = (user) =>{
 
-        setToken(token)
         setUser(user)
+        loggedIn.value = true
     }
 
     const logout = () => {
-        setToken(null)
+        loggedIn.value = false
         setUser(null)
         router.push('/account/login')
     }
 
     async function dispatchLogin(credentials){
         try {
-            const {status, data} = await API.auth.login(credentials)
+            const {status} = await API.auth.login(credentials)
             if(status == 201){
-                login(data.token, data.user)
+                // If login is successful then
+                // get the user data
+                // finally set the user data
+                const {content} = await userStore.dispatchGetUser()
+                login(content)
                 {
                     router.push(returnUrl.value || '/');
                 }
@@ -60,7 +60,22 @@ export const useAuthStore = defineStore('auth', ()=>{
     }
 
     async function dispatchLogout(){
-        logout()
+
+        try {
+            const {message} = await API.auth.logout()
+            logout()
+            return {
+                success:true,
+                content: message
+                
+            }
+        } catch (error) {
+            return {
+                success: false,
+                content:null,
+                status: error.response?.status
+            }
+        }
     }
 
 
@@ -92,12 +107,10 @@ export const useAuthStore = defineStore('auth', ()=>{
 
     }
     return {
-        token,
         returnUrl,
         isAuthenticated,
         isSuperUser,
         currentUser,
-        setToken,
         dispatchLogin,
         dispatchLogout,
         dispatchRegister
