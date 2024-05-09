@@ -22,22 +22,22 @@ class Family(BaseModel, db.Model):
     def get_family_members(cls, family_id):
         family = cls.query.filter_by(id=family_id).one_or_none()
 
-        if family:
+        if family and len(family.members) > 0:
             children = []
-            parents = {}
-            for member in family.members:
-                if member.Role == "father" or member.Role == "mother":
+            members_dict = {}
+            for assoc in family.members:
+                if assoc.Role == "father" or assoc.Role == "mother":
 
-                    parents[member.Role] = (
-                        member.member.basic_info_dict()
+                    members_dict[assoc.Role] = (
+                        assoc.member.basic_info_dict()
                     )  # calls the member models basic_info_dict
                 else:
-                    children.append(member.member.basic_info_dict())
+                    children.append(assoc.member.basic_info_dict())
                     # calls the member models basic_info_dict
-            members_dict = parents.copy()
             members_dict["children"] = children
             return members_dict
-        # return [assoc.members for assoc in family.members]
+            # print(family.members)
+            # return [assoc.member.basic_info_dict() for assoc in family.members]
         return None
 
     @classmethod

@@ -12,6 +12,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class PersonInfoMixin:
+
+    @so.declared_attr
+    def img(cls):
+        return so.mapped_column(sa.String(255), nullable=True)
+
     @so.declared_attr
     def first_name(cls):
         return so.mapped_column(sa.String(120), nullable=True)
@@ -112,6 +117,9 @@ class User(PersonInfoMixin, BaseModel, db.Model):
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_families_created(self):
+        return [family.to_dict() for family in self.families_created]
+
 
 class Member(PersonInfoMixin, BaseModel, db.Model):
     __tablename__ = "Member"
@@ -172,4 +180,4 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
 
                 decendants.extend(children)
                 nodes.extend((child, current_level + 1) for child in children)
-        return decendants
+        return [decendant.to_dict() for decendant in decendants]

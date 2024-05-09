@@ -72,7 +72,15 @@ class BaseModel:
     def basic_info_dict(self):
         """returns a dictionary containing basic details"""
 
-        basic_details = ["id", "first_name", "last_name", "gender", "dob"]
+        basic_details = [
+            "id",
+            "first_name",
+            "last_name",
+            "gender",
+            "date_of_birth",
+            "username",
+            "email",
+        ]
         return {
             c.name: getattr(self, c.name)
             for c in self.__table__.columns

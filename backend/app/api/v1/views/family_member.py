@@ -6,77 +6,29 @@ from app.api.errors import bad_request, not_found
 from app import db
 
 
-# # static family data
-
-# familyMembers = {
-#     "father": {
-#         "id": "random-father-id",
-#         "name": "C-3PO",
-#         "dateOfBirth": "2025-01-29",
-#         "img": "https://randomuser.me/api/portraits/men/1.jpg",
-#         "role": "parent",
-#     },
-#     "mother": {
-#         "id": "random-mother-id",
-#         "name": "Luke Skywalker",
-#         "dateOfBirth": "2025-01-29",
-#         "img": "https://randomuser.me/api/portraits/women/5.jpg",
-#         "role": "parent",
-#     },
-#     "children": [
-#         {
-#             "id": "random-first-child-id",
-#             "name": "Obi-Wan Kenobi",
-#             "dateOfBirth": "2025-01-29",
-#             "img": "https://randomuser.me/api/portraits/men/2.jpg",
-#             "role": "child",
-#         },
-#         {
-#             "id": "random-second-child-id",
-#             "name": "Jabba Desilijic Tiure",
-#             "dateOfBirth": "2025-02-24",
-#             "img": "https://randomuser.me/api/portraits/women/4.jpg",
-#             "role": "child",
-#         },
-#         {
-#             "id": "random-third-child-id",
-#             "name": "Darth Vader",
-#             "dateOfBirth": "2025-04-20",
-#             "img": "https://randomuser.me/api/portraits/men/6.jpg",
-#             "role": "child",
-#         },
-#         {
-#             "id": "random-last-child-id",
-#             "name": "Obi-Wan Kenobi",
-#             "dateOfBirth": "2025-04-20",
-#             "img": "https://randomuser.me/api/portraits/men/2.jpg",
-#             "role": "child",
-#         },
-#     ],
-# }
-
-# family = {
-#     "id": "random-family-id",
-#     "name": "Family Name",
-#     "created_by": "random-owner-id",
-# }
-
-
-@fam_bp.route("family/<string:member_id>/", methods=["GET"])
+@fam_bp.route("family/<string:_id>/", methods=["GET"])
 @jwt_required()
-def get_family(member_id):
-    family = models.FamilyMember.get_family_by_member_id(member_id)
-    if not family:
-        return not_found("Member does not belong to a family")
-    return jsonify(family.to_dict()), 200
+def get_family(_id):
+
+    # Try fetching the family by testing the _id as member id
+    family_by_member_id = models.FamilyMember.get_family_by_member_id(_id)
+    if family_by_member_id:
+        return jsonify(family_by_member_id.to_dict()), 200
+
+    # if it fails try fetching the family by testing _id as family id
+    family_by_fam_id = models.Family.query.get(_id)
+    if family_by_fam_id:
+        return jsonify(family_by_fam_id.to_dict()), 200
+    return not_found("Family does not exist")
 
 
 @fam_bp.route("family/members/<string:family_id>/", methods=["GET"])
 @jwt_required()
 def get_family_members(family_id):
+
     family_members = models.Family.get_family_members(family_id)
     if not family_members:
-        return not_found("Family has no members", 404)
+        return not_found("Family has no members")
     return jsonify(family_members), 200
 
 
@@ -95,6 +47,7 @@ def get_ancestors(member_id):
     level = request.args.get("level")
     if not level:
         return bad_request("Level must be provide in request args")
+    level = int(level)
     member = models.Member.query.get(member_id)
 
     if not member:
@@ -111,9 +64,22 @@ def get_decendants(member_id):
     level = request.args.get("level")
     if not level:
         return bad_request("Level must be provide in request args")
+    level = int(level)
     member = models.Member.query.get(member_id)
+    if not member:
+        return not_found("member does not exist")
     decendants = member.get_decendants(level)
+    print(decendants)
     return jsonify(decendants)
+
+
+@fam_bp.route("/family/owner/<string:family_id>")
+@jwt_required()
+def get_family_owner(family_id):
+    family = models.Family.query.get(family_id)
+    if not family:
+        return not_found("Family does not exist")
+    return family.creator.basic_info_dict()
 
 
 # CREATE ROUTES
@@ -179,8 +145,10 @@ def delete_family(family_id):
     family = models.Family.query.get(family_id)
     if not family:
         return not_found("Family does not exist")
+    family_dict = family.to_dict()
     db.session.delete(family)
     db.session.commit()
+    return family_dict
 
 
 @fam_bp.route(

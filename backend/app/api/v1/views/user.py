@@ -20,6 +20,12 @@ def get_user():
     return jsonify(user), 200
 
 
+@bp.route("user/family-created/")
+@jwt_required()
+def get_families_created():
+    return current_user.get_families_created()
+
+
 @bp.route("user/<string:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user(user_id):
@@ -40,7 +46,6 @@ def user_update(user_id):
     if not user:
         return not_found("User does not exist")
     user.update_user(**request.json)
-    db.session.flush()
     db.session.commit()
 
     return user.to_dict()
