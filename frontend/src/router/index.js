@@ -9,9 +9,42 @@ const router = createRouter({
   linkActiveClass:'active',
   routes: [
     {
-      path: '/',
+      path: '',
       name: 'home',
-      component: ()=> import('../views/HomeView.vue')
+      component: ()=> import('@/views/main/MainView.vue'),
+      children:[
+        {
+          path:"",
+          name:"main",
+          component: () => import('@/views/main/HomeView.vue')
+        },
+        {
+          path:"/tree/:familyId",
+          name:"tree",
+          component: () => import("@/views/main/TreeView.vue"),
+          props:true
+        },
+        {
+          path: "/profile/:userId",
+          name: "profile",
+          redirect: "view",
+          children:[
+            {
+              path:"/view",
+              name: "view",
+              component: () =>  import("@/views/main/profile/UserProfileView.vue"),
+              props:true
+            },
+            {
+              path:"/edit",
+              name:"edit",
+              component: () => import("@/views/main/profile/UserProfileEditView.vue"),
+              props:true
+            }
+          ],
+          props:true
+        }
+      ]
     },
     // Accounts route set up
     { ...accountRoute},
@@ -22,11 +55,6 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component : () => import('../views/UserView.vue')
     },
     {path : '/:pathMatch(.*)*', redirect:'/'}
 
@@ -41,9 +69,9 @@ router.beforeEach(async(to) => {
   const authRequired = !publicPages.includes(to.path);
 
   const authStore = useAuthStore();
-
   if (authRequired && !authStore.isAuthenticated) {
-      authStore.returnUrl = to.fullPath;
+    
+      authStore.setReturnUrl(to.fullPath)
       return '/account/login';
   }
 })

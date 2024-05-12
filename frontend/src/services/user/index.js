@@ -14,8 +14,13 @@ const updateUser = async(id, input) => {
     return await http.put(`user/${id}`, input)
 }
 
+// get the families user created
+const getFamiliesCreated = async () => {
+    return await http.get('user/family-created/')
+}
 export default{
     getUser,
     deleteUser,
-    updateUser
+    updateUser,
+    getFamiliesCreated
 }

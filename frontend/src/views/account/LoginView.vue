@@ -1,31 +1,65 @@
 <script setup>
-// import { useAuthStore } from '@/stores/auth';
-import { ref } from 'vue';
-// const authStore = useAuthStore()
-const email = ref("")
-const  password = ref("")
+import { useAuthStore } from '@/stores/auth';
+import { reactive } from "vue";
+import { useForm } from "vuestic-ui";
 
-// const {dispatchLogin} = authStore
+const form = reactive({
+  email: "",
+  password: "",
+});
+
+const { validate, isValid } = useForm("myForm");
+
+const authStore = useAuthStore()
+
+
+function validateEmail(email) {
+    const re = /^[\w.-]+@[\w.-]+\.\w+$/;
+    return re.test(email);
+
+  }
+
+const submit = async() =>{
+  let res;
+  try {
+    res = await authStore.dispatchLogin(form)
+  } catch (error) {
+    console.error(error)
+    console.log(res)
+  }
+  
+}
+
+
 
 </script>
 
 <template>
+  <VaForm ref="myForm" class="form-grp">
+
     <VaInput
-      v-model="email"
+      v-model="form.email"
       type="email"
       placeholder="hello@epicmax.co"
       label="Email"
+      :rules="[
+        (v) => Boolean(v) || 'Email is required',
+        (v) => validateEmail(v) || 'Invalid email address']"
+      
     />
+
     <VaValue
       v-slot="isPasswordVisible"
       :default-value="false"
     >
       <VaInput
-        v-model="password"
+        v-model="form.password"
         :type="isPasswordVisible.value ? 'text' : 'password'"
         label="Password with toggle"
         placeholder="#########"
         @click-append-inner="isPasswordVisible.value = !isPasswordVisible.value"
+        :rules="[
+        (v) => Boolean(v) || 'Password is required',]"
       >
         <template #appendInner>
           <VaIcon
@@ -36,10 +70,42 @@ const  password = ref("")
         </template>
       </VaInput>
     </VaValue>
-    <VaButton>
-      <router-link to="register">
-        Register
-      </router-link>
+    <VaButton :disabled="!isValid" 
+      @click="validate() && submit()"
+      color="success"
+      class="submit-btn">
+      Submit
     </VaButton>
-    
+  </VaForm>
+
+  <div class="alt-auth">
+    <p>Don't have an account?</p>
+    <VaButton size="medium">
+        <router-link to="register">
+          Register
+        </router-link>
+      </VaButton>
+  </div>
+
 </template>
+
+<style scoped>
+.form-grp{
+            justify-content: center;
+            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr;
+            margin: auto;
+            width: 70%;
+        }
+
+        .submit-btn{
+            margin-left: 15px;
+            width: 100%;
+        }
+
+        .alt-auth{
+            justify-content: space-around;
+            margin: 10px;
+        }
+</style>

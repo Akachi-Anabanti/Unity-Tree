@@ -1,12 +1,19 @@
 import { API } from "@/services";
 import { defineStore } from "pinia";
 import { useAuthStore } from "../auth";
+import { computed, reactive} from "vue";
 
 
 export const useUserStore = defineStore('userStore', () =>{
 
     const authStore = useAuthStore()
+    let familiesCreated = reactive([])
 
+    const numberOfFamiliesCreated = computed (() => familiesCreated.length)
+
+    const getFamily = ()=>{
+        return familiesCreated
+    }
 
     async function dispatchGetUser(){
         try {
@@ -96,9 +103,34 @@ export const useUserStore = defineStore('userStore', () =>{
         }
     }
 
+    async function dispatchGetFamiliesCreated(){
+        try {
+            const {status, data} = await API.users.getFamiliesCreated()
+            if (status === 200) {
+                familiesCreated = data
+                return {
+                    success:true,
+                    content:null
+                }
+            }
+        } catch (error) {
+            return {
+                success: false,
+                content:null,
+                status: error.response?.status
+            }
+
+        }
+
+    }
+
     return {
+        
+        numberOfFamiliesCreated,
+        getFamily,
         dispatchGetUser,
         dispatchDeleteUser,
-        dispatchUpdateUser
+        dispatchUpdateUser,
+        dispatchGetFamiliesCreated
     }
 });

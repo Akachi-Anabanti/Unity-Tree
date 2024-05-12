@@ -1,16 +1,21 @@
-import router from "@/router";
 import { API } from "@/services";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useUserStore } from "../user";
+import { useAlertStore } from "../alert";
+import { getCookie, saveLocalToken, removeLocalToken, getLocalToken } from "@/utils";
+import {useRouter} from "vue-router";
 
 export const useAuthStore = defineStore('auth', ()=>{
 
+    const router = useRouter()
+
     const userStore = useUserStore()
+    const alertStore = useAlertStore()
 
-    const loggedIn = ref(false)
-
-    const isAuthenticated = computed(() => loggedIn.value);
+    const isLoggedIn = ref(false)
+    const token = ref(null)
+    const isAuthenticated = computed(() => isLoggedIn.value);
     const isSuperUser = ref(false)
     const currentUser = ref(null)
     const returnUrl = ref(null)
@@ -19,30 +24,60 @@ export const useAuthStore = defineStore('auth', ()=>{
         currentUser.value = user
     }
 
-    const login = (user) =>{
-
-        setUser(user)
-        loggedIn.value = true
+    const setReturnUrl = async (urlPath)=> {
+        returnUrl.value = urlPath
     }
 
     const logout = () => {
-        loggedIn.value = false
+        isLoggedIn.value = false
+        removeLocalToken()
         setUser(null)
         router.push('/account/login')
     }
 
+    async function dispatchCheckLoggedIn(){
+        if(!isLoggedIn.value){
+            if(!token.value){
+                const localToken = getLocalToken();
+                if (localToken) {
+                    token.value = localToken
+                    isLoggedIn.value = true
+                }
+            }
+            if (token.value) {
+                try {
+                    isLoggedIn.value = true
+                    const {data} = await API.users.getUser()
+                    setUser(data)
+                    
+                } catch (error) {
+                    logout()
+                }
+ 
+            } else {
+                logout()
+            }
+        }
+    }
     async function dispatchLogin(credentials){
         try {
-            const {status} = await API.auth.login(credentials)
-            if(status == 201){
-                // If login is successful then
-                // get the user data
-                // finally set the user data
-                const {content} = await userStore.dispatchGetUser()
-                login(content)
-                {
-                    router.push(returnUrl.value || '/');
+            const {status, data} = await API.auth.login(credentials)
+            if(status == 200){
+                const tokenVal = getCookie("csrf_access_token");
+                if (tokenVal){
+                    saveLocalToken(tokenVal)
+                    const {content} = await userStore.dispatchGetUser()
+                    token.value = tokenVal
+                    setUser(content)
+                    
+                    isLoggedIn.value = true
+                    router.push(returnUrl.value || "/");
+
+                    alertStore.dispatchShowMainAlertSuccess(data.message)
                 }
+            } else {
+                dispatchLogout()
+                alertStore.dispatchShowMainAlertFailure(data.message)
             }
         } catch (error) {
             return {
@@ -107,13 +142,15 @@ export const useAuthStore = defineStore('auth', ()=>{
 
     }
     return {
-        returnUrl,
+
         isAuthenticated,
         isSuperUser,
         currentUser,
+        setReturnUrl,
         dispatchLogin,
         dispatchLogout,
-        dispatchRegister
+        dispatchRegister,
+        dispatchCheckLoggedIn
 
     }
 })

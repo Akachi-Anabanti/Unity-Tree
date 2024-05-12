@@ -1,11 +1,17 @@
 <script setup>
     import {ref} from 'vue';
     import {useAuthStore} from '@/stores/auth'
-
+    import {useAlertStore} from '@/stores/alert'
+    import AlertComponent from '@/components/AlertComponent.vue';
+ 
     const showSidebar = ref(false)
     const page = ref('home')
     const authStore = useAuthStore();
+    const useAlert = useAlertStore()
 
+    const logout = async() => {
+        authStore.dispatchLogout()
+    }
 
 </script>
 
@@ -30,7 +36,6 @@
         <RouterLink to="/profile">
           <div style="margin-right: 3rem;">
             <VaAvatar
-          :src="authStore.currentUser.img"
           @click="page='profile'"
           
         />
@@ -71,6 +76,16 @@
                 </VaSidebarItemContent>
             </RouterLink>
         </VaSidebarItem>
+        <VaSidebarItem :active="page === 'tree'" @click="page = 'tree'">
+            <RouterLink :to="{name:'tree', params:{familyId: 'random-id-for-test'}}">
+                <VaSidebarItemContent>
+                    <VaIcon name="account_tree" />
+                    <VaSidebarItemTitle>
+                        Tree
+                    </VaSidebarItemTitle>
+                </VaSidebarItemContent>
+            </RouterLink>
+        </VaSidebarItem>
         <VaSidebarItem :active="page === 'about'" @click="page = 'about'">
             <RouterLink to="/about">
                 <VaSidebarItemContent>
@@ -100,11 +115,29 @@
                 </VaSidebarItemContent>
         </VaSidebarItem>
 
+        <VaSidebarItem @click="logout" style="bottom: 0;">
+            <VaSidebarItemContent>
+            <VaIcon name="logout" />
+                <VaSidebarItemTitle>
+                    Logout
+                </VaSidebarItemTitle>
+                </VaSidebarItemContent>
+        </VaSidebarItem>
+
     </VaSidebar>
     </template>
 
     <template #content>
     <main class="main">
+        <div class="main-alert">
+          <AlertComponent
+              :alert-message="useAlert.alertMessage"
+              :show-alert-success="useAlert.showMainAlertSuccess"
+              :show-alert-warning="useAlert.showMainAlertWarning"
+              :show-alert-failure="useAlert.showMainAlertFailure"
+          />
+        </div>
+
         <RouterView />
     </main>
     </template>
@@ -120,4 +153,24 @@
   justify-content: center;
   padding: 2rem;
 }
+.main-alert{
+  position: fixed;
+  z-index: 1;
+  left: 35%;
+  right: 35%;
+  width: 30%;
+  top: 90%;
+  align-items: center;
+  animation: swell 2s  infinite ease-in-out;
+}
+@keyframes swell {
+  0%, 100% {
+    transform: scale(1); /* Start and end at normal size */
+  }
+
+  50% {
+    transform: scale(1.1); /* At the midpoint of the animation, increase the size */
+  }
+}
+
 </style>

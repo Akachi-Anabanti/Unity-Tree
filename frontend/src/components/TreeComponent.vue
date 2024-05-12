@@ -7,6 +7,8 @@
   import adjustHeight from '@/_helpers';
 
 
+ const props = defineProps({familyId:{type:String}})
+
   const useAlert = useAlertStore()
   const useFamily = useFamilyStore()
 
@@ -21,16 +23,19 @@
   const modalRemovePersonFamId = ref("")
   const confirmModalDelete = ref(false)
 
+
+  const isLoading = ref(true)
+
   //options for the modal button
   const modalButtonOptions = ref({
     color:"danger",
     hoverMaskColor:"#ffff"
   })
 
-  onMounted(() => {
-    if (useFamily.familyMembersLoaded && useFamily.numberOfChildren != 0){
+  onMounted(async() => {
+      await useFamily.dispatchGetFamilyMembers(props)
+      isLoading.value = false
       adjustHeight(container);
-    }
   });
 
   const handleModalOk = async (hide) => {
@@ -108,7 +113,12 @@
      >
      Remove <em>{{ modalRemovePerson.name }}</em> from family?
      </VaModal>
-    <div class="tree-container">
+
+     <div v-if="isLoading">
+      Loading...
+     </div>
+     <div v-else>
+      <div class="tree-container" v-if="!useFamily.isFamilyEmpty">
         <div class="parent-card-container" >
             <div v-for="(person, role) in familyMembers" :key="role" class="parent-card"
                 :class="{'father': role === 'father', 'mother': role === 'mother'}">
@@ -129,6 +139,11 @@
             </draggable>
         </div>
     </div>
+    <div v-else>
+      Family is empty
+    </div>
+     </div>
+
 </template>
 
 <style scoped>
