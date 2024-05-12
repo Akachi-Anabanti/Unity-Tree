@@ -16,13 +16,13 @@ class FamilyMember(BaseModel, db.Model):
     member_id = so.mapped_column(
         sa.String(255), sa.ForeignKey("Member.id"), primary_key=True
     )
-    Role: so.Mapped[str] = so.mapped_column(sa.String(60))
+    role: so.Mapped[str] = so.mapped_column(sa.String(60))
     family = so.relationship("Family", back_populates="members")
     member = so.relationship("Member", back_populates="families")
 
     @classmethod
     def create_family_member(cls, family_id, member_id, role):
-        new_family_member = cls(family_id=family_id, member_id=member_id, Role=role)
+        new_family_member = cls(family_id=family_id, member_id=member_id, role=role)
         return new_family_member
 
     @classmethod
@@ -59,13 +59,13 @@ class FamilyMember(BaseModel, db.Model):
 # member = session.query(Member).filter(Member.MemberId == <member_id>).first()
 
 # # get the associations where the member is a 'father'
-# father_associations = session.query(FamilyMember).filter(FamilyMember.MemberId == member.MemberId, FamilyMember.Role == 'father').all()
+# father_associations = session.query(FamilyMember).filter(FamilyMember.MemberId == member.MemberId, FamilyMember.role == 'father').all()
 
 # # get the families where the member is a 'father'
 # father_families = [assoc.family for assoc in father_associations]
 
 # # get the associations where the member is a 'child'
-# child_associations = session.query(FamilyMember).filter(FamilyMember.MemberId == member.MemberId, FamilyMember.Role == 'child').all()
+# child_associations = session.query(FamilyMember).filter(FamilyMember.MemberId == member.MemberId, FamilyMember.role == 'child').all()
 
 # # get the families where the member is a 'child'
 # child_families = [assoc.family for assoc in child_associations]
@@ -82,7 +82,7 @@ class FamilyMember(BaseModel, db.Model):
 # member = session.query(Member).filter(Member.MemberId == <member_id>).first()
 
 # # get the families where the member is a child
-# child_families = session.query(FamilyMember).filter(FamilyMember.MemberId == member.MemberId, FamilyMember.Role == 'child').all()
+# child_families = session.query(FamilyMember).filter(FamilyMember.MemberId == member.MemberId, FamilyMember.role == 'child').all()
 
 # # get the siblings and parents
 # siblings = []
@@ -91,7 +91,7 @@ class FamilyMember(BaseModel, db.Model):
 #     family_members = [assoc.member for assoc in assoc.family.members]
 #     for family_member in family_members:
 #         if family_member.MemberId != member.MemberId:
-#             if family_member.Role in ['father', 'mother']:
+#             if family_member.role in ['father', 'mother']:
 #                 parents.append(family_member)
 #             else:
 #                 siblings.append(family_member)
@@ -110,9 +110,9 @@ class FamilyMember(BaseModel, db.Model):
 #     family_members = [assoc.member for assoc in assoc.family.members]
 #     for family_member in family_members:
 #         if family_member.MemberId != member.MemberId:
-#             if family_member.Role == 'child':
+#             if family_member.role == 'child':
 #                 children.append(family_member)
-#             elif family_member.Role == 'mother':
+#             elif family_member.role == 'mother':
 #                 spouse = family_member
 
 

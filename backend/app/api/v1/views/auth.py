@@ -8,6 +8,11 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 
+
+# import requests
+# from flask_sse import sse
+
+
 from email_validator import validate_email, EmailNotValidError
 
 from flask_jwt_extended import (
@@ -63,8 +68,11 @@ def is_email_valid(email, **kwargs):
 @api_v1_bp.route("/login", methods=["POST"])
 def login():
     response = jsonify({"message": "login successful"})
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
+
+    payload = request.json
+
+    email = payload.get("email")
+    password = payload.get("password")
 
     user = models.User.query.filter_by(email=email).one_or_none()
 
@@ -135,3 +143,14 @@ def register_member(member_id):
     db.session.commit()
 
     return jsonify({"message": "Member registered successfully!"})
+
+
+@api_v1_bp.route("/status/")
+def api_status():
+    return {"status": "online"}, 200
+
+
+# @api_v1_bp.route("/stream")
+# def stream():
+#     status = "online"
+#     sse.publish({"status": status}, type="api_status")

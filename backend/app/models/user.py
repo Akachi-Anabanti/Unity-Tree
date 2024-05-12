@@ -5,8 +5,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import db
 from app.models import BaseModel
-from typing import Optional
-from datetime import date
+
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -145,7 +144,7 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
 
     def get_parent(self, role):
         for family_member in self.families:
-            if family_member.Role == role:
+            if family_member.role == role:
                 return family_member.member
         return None
 
@@ -175,7 +174,7 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
                 children = [
                     family_member.member
                     for family_member in current_node.families
-                    if family_member.Role == "child"
+                    if family_member.role == "child"
                 ]
 
                 decendants.extend(children)

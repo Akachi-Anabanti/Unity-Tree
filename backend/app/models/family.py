@@ -26,9 +26,9 @@ class Family(BaseModel, db.Model):
             children = []
             members_dict = {}
             for assoc in family.members:
-                if assoc.Role == "father" or assoc.Role == "mother":
+                if assoc.role == "father" or assoc.role == "mother":
 
-                    members_dict[assoc.Role] = (
+                    members_dict[assoc.role] = (
                         assoc.member.basic_info_dict()
                     )  # calls the member models basic_info_dict
                 else:
