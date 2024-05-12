@@ -32,6 +32,18 @@ def get_family_members(family_id):
     return jsonify(family_members), 200
 
 
+@fam_bp.route("family/member/get-siblings/<string:member_id>")
+@jwt_required()
+def get_siblings(member_id):
+    member = models.Member.query.get(member_id)
+    if not member:
+        user = models.User.query.get(member_id)
+        if not user or not user.member:
+            return not_found("member does not exist")
+        member = user.member
+    return jsonify(member.get_siblings()), 200
+
+
 @fam_bp.route("family/member/<string:member_id>/", methods=["GET"])
 @jwt_required()
 def get_family_member(member_id):

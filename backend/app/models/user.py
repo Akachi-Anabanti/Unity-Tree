@@ -180,3 +180,12 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
                 decendants.extend(children)
                 nodes.extend((child, current_level + 1) for child in children)
         return [decendant.to_dict() for decendant in decendants]
+
+    def get_siblings(self):
+        siblings = []
+        for family_member in self.families:
+            if family_member.role == "child":
+                for sibling in family_member.family.members:
+                    if sibling.role == "child" and sibling.member_id != self.id:
+                        siblings.append(sibling.member)
+        return siblings
