@@ -80,6 +80,8 @@ class BaseModel:
             "date_of_birth",
             "username",
             "email",
+            "role",
+            "img",
         ]
         return {
             c.name: getattr(self, c.name)

@@ -189,3 +189,14 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
                     if sibling.role == "child" and sibling.member_id != self.id:
                         siblings.append(sibling.member)
         return siblings
+
+    def to_dict(self, family_id=None):
+        data = super().to_dict()
+
+        if family_id:
+            family_member = next(
+                (fm for fm in self.families if fm.family_id == family_id), None
+            )
+            if family_member:
+                data["role"] = family_member.role
+        return data

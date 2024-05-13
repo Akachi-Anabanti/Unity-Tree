@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_jwt_extended import current_user, jwt_required
 from app.api import api_v1_bp as fam_bp
 from flask import jsonify, request
@@ -111,15 +112,24 @@ def make_family():
 @jwt_required()
 def create_family_member(family_id):
 
-    first_name = request.json.get("first_name")
-    last_name = request.json.get("last_name")
+    first_name = request.json.get("firstName")
+    last_name = request.json.get("lastName")
     role = request.json.get("role")
+    date_string = request.json.get("dateOfBirth")
+
+    # convert the date back to python date format
+    date_of_birth = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
 
     family = models.Family.query.get(family_id)
     if not family:
         return not_found("Family not found")
 
-    new_member = models.Member(first_name=first_name, last_name=last_name)
+    new_member = models.Member(
+        first_name=first_name, last_name=last_name, date_of_birth=date_of_birth
+    )
+
+    new_member.last_name = family.name
+    # new_member.role = role
 
     db.session.add(new_member)
     fam_member = models.FamilyMember().create_family_member(
@@ -128,7 +138,7 @@ def create_family_member(family_id):
     db.session.add(fam_member)
     db.session.commit()
 
-    return fam_member.to_dict()
+    return new_member.to_dict(family_id)
 
 
 # UPDATE ROUTES

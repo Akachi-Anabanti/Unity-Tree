@@ -28,11 +28,11 @@ class Family(BaseModel, db.Model):
             for assoc in family.members:
                 if assoc.role == "father" or assoc.role == "mother":
 
-                    members_dict[assoc.role] = (
-                        assoc.member.basic_info_dict()
+                    members_dict[assoc.role] = assoc.member.to_dict(
+                        family_id
                     )  # calls the member models basic_info_dict
                 else:
-                    children.append(assoc.member.basic_info_dict())
+                    children.append(assoc.member.to_dict(family_id))
                     # calls the member models basic_info_dict
             members_dict["children"] = children
             return members_dict
