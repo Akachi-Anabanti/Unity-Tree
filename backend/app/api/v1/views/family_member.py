@@ -115,14 +115,19 @@ def create_family_member(family_id):
     last_name = request.json.get("last_name")
     role = request.json.get("role")
 
+    family = models.Family.query.get(family_id)
+    if not family:
+        return not_found("Family not found")
+
     new_member = models.Member(first_name=first_name, last_name=last_name)
+
     db.session.add(new_member)
     fam_member = models.FamilyMember().create_family_member(
         family_id, new_member.id, role
     )
     db.session.add(fam_member)
     db.session.commit()
-    print(fam_member.to_dict())
+
     return fam_member.to_dict()
 
 
