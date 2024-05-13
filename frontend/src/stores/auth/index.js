@@ -5,13 +5,14 @@ import { useUserStore } from "../user";
 import { useAlertStore } from "../alert";
 import { getCookie, saveLocalToken, removeLocalToken, getLocalToken } from "@/utils";
 import {useRouter} from "vue-router";
-
+// import { getActivePinia } from "pinia";
 export const useAuthStore = defineStore('auth', ()=>{
 
     const router = useRouter()
 
     const userStore = useUserStore()
     const alertStore = useAlertStore()
+   
 
     const isLoggedIn = ref(false)
     const token = ref(null)
@@ -32,6 +33,7 @@ export const useAuthStore = defineStore('auth', ()=>{
         isLoggedIn.value = false
         removeLocalToken()
         setUser(null)
+        // getActivePinia()._s.forEach(store => store.$reset());
         router.push('/account/login')
     }
 

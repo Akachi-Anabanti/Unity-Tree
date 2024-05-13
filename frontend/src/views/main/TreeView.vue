@@ -2,38 +2,51 @@
     import TreeComponent from '@/components/TreeComponent.vue';
     import modalComponent from '@/components/modalComponent.vue';
     import MemberForm from '@/components/MemberForm.vue';
-    import { ref } from 'vue';
+    import { onBeforeMount, ref } from 'vue';
     import { useAlertStore } from '@/stores/alert';
     import { useFamilyStore } from '@/stores/family';
+import { useRouter } from 'vue-router';
 
 
+    const router = useRouter()
     const useAlert = useAlertStore()
     const useFamily = useFamilyStore()
 
+    const props = defineProps({familyId:{type:String, required:true}})
+
     const showModal = ref(false);
+
+    onBeforeMount(async() =>{
+        await useFamily.dispatchGetFamily(props.familyId)
+
+        if (!useFamily.hasFamily){
+            useAlert.dispatchShowMainAlertFailure("This family does not exist consider creating it")
+            router.push('/')
+        }
+    })
 
 
 // Function to handle Modal Form Submit
     const handleFormSubmit = async (newMember) => {
-        await useFamily.dispatchCreateFamilyMember(useFamily.getFamilyId, newMember)
-        .then((res) => {
-        console.log(res)
-        if (res.success) {
-            const message = `${newMember.firstName} added successfully as ${newMember.role}!`
-            useAlert.dispatchShowModalAlertSuccess(message)
-        } else {
-            const message = "Failed to Add member!"
+        try {
+            const {success} = await useFamily.dispatchCreateFamilyMember(useFamily.getFamilyId, newMember)
+            if (success){
+                const message = `${newMember.firstName} added successfully as ${newMember.role}!`
+                useAlert.dispatchShowModalAlertSuccess(message)
+            } else {
+                const message = "Failed to Add member!"
             useAlert.dispatchShowModalAlertFailure(message)
+            }
+        } catch (error) {
+            console.error(error)
         }
-        }).catch((error) => {
-        console.error(error)
-        })
     }
 
 </script>
 
 <template>
-    <modalComponent v-model="showModal">
+    <div v-if="useFamily.hasFamily">
+        <modalComponent v-model="showModal">
         <template #form>
             <MemberForm  @submit="handleFormSubmit"/>
         </template>
@@ -43,7 +56,8 @@
     <div class="flex items-center gap-8 flex-wrap add-member">
         <VaButton round icon="va-plus" size="large" @click="showModal = true"/>
     </div>
-    <TreeComponent />
+        <TreeComponent :family-id="props.familyId" />
+    </div>
 </template>
 
 <style scoped>

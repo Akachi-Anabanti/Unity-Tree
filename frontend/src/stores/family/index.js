@@ -10,13 +10,11 @@ export const useFamilyStore =  defineStore('family',() =>{
     const familyData = ref({})
 
     const hasFamily = ref(false)
-    const familyMembersLoaded = ref(false)
 
     const numberOfChildren = computed(() => familyMembers.value.children.length)
-    const isFamilyEmpty = computed(() => Object.keys(familyMembers.value).length === 0)
+    const isFamilyEmpty = ref(true)
     const getFamilyName = computed(() => familyData.value.name)
     const getFamilyId = computed(() => familyData.value.id)
-
 
     const getChildIdx = (person) => {
         return familyMembers.value.children.findIndex((cd) => cd.id === person.id)
@@ -236,7 +234,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async  function dispatchCreateFamilyMember(familyId, input) {
         try {
             const {status, data} = await API.family.createFamilyMember(familyId, input)
-            if (status === 201) {
+            if (status === 200) {
 
                 createFamilyMember(data)
                 return {
@@ -324,13 +322,15 @@ export const useFamilyStore =  defineStore('family',() =>{
             if(status === 200){
                 // create familyMembers data
                 initFamilyMembers(data)
-                familyMembersLoaded.value = true
+                isFamilyEmpty.value = false
 
                 return {
                     success: true,
                     content: null,
                 }
 
+            } else {
+                isFamilyEmpty.value = true
             }
         } catch (error) {
             
@@ -395,7 +395,6 @@ export const useFamilyStore =  defineStore('family',() =>{
         getFamilyId,
         memberInfo,
         hasFamily,
-        familyMembersLoaded
     }
 
 })

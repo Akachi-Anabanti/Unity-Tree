@@ -5,14 +5,11 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    methods: {
-      addElement() {
-        // Add your logic for adding a new element here
-      }
-    }
-  }
+  <script setup>
+  
+  // function addElement(){
+  //   // adds the new element
+  // }
   </script>
   
   <style scoped>

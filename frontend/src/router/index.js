@@ -2,6 +2,7 @@ import { useAlertStore } from '@/stores/alert';
 import { useAuthStore } from '@/stores/auth';
 import { createRouter, createWebHistory} from 'vue-router'
 import accountRoute from './account';
+import HomeView from '@/views/main/HomeView.vue';
 
 
 const router = createRouter({
@@ -16,7 +17,7 @@ const router = createRouter({
         {
           path:"",
           name:"main",
-          component: () => import('@/views/main/HomeView.vue')
+          component: HomeView
         },
         {
           path:"/tree/:familyId",

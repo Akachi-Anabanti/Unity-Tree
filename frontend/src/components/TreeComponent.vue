@@ -7,7 +7,13 @@
   import adjustHeight from '@/_helpers';
 
 
- const props = defineProps({familyId:{type:String}})
+  const props = defineProps({
+  familyId: {
+    type: String,
+    required: true
+  }
+})
+
 
   const useAlert = useAlertStore()
   const useFamily = useFamilyStore()
@@ -33,10 +39,25 @@
   })
 
   onMounted(async() => {
-      await useFamily.dispatchGetFamilyMembers(props)
+      await useFamily.dispatchGetFamilyMembers(props.familyId)
       isLoading.value = false
-      adjustHeight(container);
+      if (!useFamily.isFamilyEmpty){
+        // adjust the height if the family is not empty
+        // adjustHeight(container)
+      }
   });
+
+  onUpdated(() => {
+            adjustHeight(container)
+         })
+
+  // Watches for changes in the length of the children value
+        watch(
+          () => useFamily.numberOfChildren,
+          () => nextTick(() => {
+              adjustHeight(container)
+          })
+        )
 
   const handleModalOk = async (hide) => {
     // set modeldelte value
@@ -78,17 +99,7 @@
   });
 
   //tries to recalulate height
-  onUpdated(() => {
-    adjustHeight(container)
-  })
-
-  // Watches for changes in the length of the children value
-  watch(
-    () => useFamily.numberOfChildren,
-    () => nextTick(() => {
-        adjustHeight(container)
-    })
-  )
+  
 
   async function getMemberFamily (memberId) {
     // Fetch the new family data based on memberId
@@ -140,7 +151,10 @@
         </div>
     </div>
     <div v-else>
-      Family is empty
+      Add Members to this Family
+      <h4>
+        {{ useFamily.getFamilyName}}
+      </h4>
     </div>
      </div>
 

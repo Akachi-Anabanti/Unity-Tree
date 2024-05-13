@@ -8,15 +8,12 @@
 
   const isLoading = ref(true)
   const userStore = useUserStore();
-  const showModal = ref(true)
-  showModal.value = true;
     
 
   onBeforeMount(async()=>{
     await userStore.dispatchGetFamiliesCreated()
     isLoading.value = false
   })
-
 
 </script>
 
@@ -30,7 +27,7 @@
       Loading...
     </div>
     <div v-else>
-      <div v-if="userStore.numberOfFamiliesCreated > 0">
+      <div v-if="userStore.isNumberNotZero">
         <ShowFamily />
       </div>
       <div v-else>

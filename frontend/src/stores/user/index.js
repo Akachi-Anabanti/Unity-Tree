@@ -10,6 +10,7 @@ export const useUserStore = defineStore('userStore', () =>{
     let familiesCreated = reactive([])
 
     const numberOfFamiliesCreated = computed (() => familiesCreated.length)
+    const isNumberNotZero = computed (() => numberOfFamiliesCreated.value > 0) 
 
     const getFamily = ()=>{
         return familiesCreated
@@ -125,7 +126,7 @@ export const useUserStore = defineStore('userStore', () =>{
     }
 
     return {
-        
+        isNumberNotZero,
         numberOfFamiliesCreated,
         getFamily,
         dispatchGetUser,
