@@ -31,13 +31,13 @@ const router = createRouter({
           redirect: "view",
           children:[
             {
-              path:"/view",
+              path:"/view/:userId",
               name: "view",
               component: () =>  import("@/views/main/profile/UserProfileView.vue"),
               props:true
             },
             {
-              path:"/edit",
+              path:"/edit/:userId",
               name:"edit",
               component: () => import("@/views/main/profile/UserProfileEditView.vue"),
               props:true

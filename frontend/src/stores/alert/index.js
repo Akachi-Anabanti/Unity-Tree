@@ -16,6 +16,16 @@ export const useAlertStore = defineStore('alert', ()=>{
     const alertMessage = ref("")
 
 
+    // Resets the store
+    function $reset(){
+        showMainAlertSuccess.value = false
+        showMainAlertFailure.value= false
+        showMainAlertWarning.value = false
+        showModalAlertSuccess.value= false
+        showModalAlertFailure.value= false
+        showModalAlertWarning.value = false
+        alertMessage.value = ""
+    }
 
 
     function dispatchShowMainAlertSuccess(message){
@@ -73,6 +83,7 @@ export const useAlertStore = defineStore('alert', ()=>{
     }
 
     return {
+        $reset,
         showMainAlertSuccess,
         showMainAlertWarning,
         showMainAlertFailure,

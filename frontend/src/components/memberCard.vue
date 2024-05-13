@@ -5,9 +5,9 @@ const router = useRouter()
 
  const person = defineProps({
   id:{type:String},
-  img: {type: String, required: true},
-  name: {type: String, required:true},
-  dateOfBirth: { type: String, required: true},
+  img:{},
+  first_name: {type: String, required:true},
+  date_of_birth: { required: true},
   role:{type: String, required:true}
   
  })
@@ -35,10 +35,10 @@ const router = useRouter()
   <VaCard :bordered="false" @click="handleCardClick">
     <VaIcon name="delete" size="large" @click.stop="handleRemove" color="danger"/>
     <div class="card-avatar">
-      <VaAvatar :src="person.img" size="large" @click.stop="handleProfileClick"/>
+      <VaAvatar :src="person.img ? person.img : 'https://randomuser.me/api/portraits/men/1.jpg'" size="large" @click.stop="handleProfileClick"/>
     </div>
-    <VaCardTitle class="mb-4">{{ person.name }}</VaCardTitle>
-    <VaCardContent>{{ person.dateOfBirth }}</VaCardContent>
+    <VaCardTitle class="mb-4">{{ person.first_name }}</VaCardTitle>
+    <VaCardContent>{{ person.date_of_birth }}</VaCardContent>
   </VaCard>
 </template>
 

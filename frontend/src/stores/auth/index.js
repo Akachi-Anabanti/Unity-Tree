@@ -5,7 +5,8 @@ import { useUserStore } from "../user";
 import { useAlertStore } from "../alert";
 import { getCookie, saveLocalToken, removeLocalToken, getLocalToken } from "@/utils";
 import {useRouter} from "vue-router";
-// import { getActivePinia } from "pinia";
+import reset_all_stores from "..";
+
 export const useAuthStore = defineStore('auth', ()=>{
 
     const router = useRouter()
@@ -21,6 +22,18 @@ export const useAuthStore = defineStore('auth', ()=>{
     const currentUser = ref(null)
     const returnUrl = ref(null)
 
+
+    // resets the store
+    function $reset(){
+        isLoggedIn.value = false
+        token.value =null
+        isSuperUser.value = false
+        currentUser.value = 
+        returnUrl.value = null
+    }
+
+
+
     const setUser = (user) => {
         currentUser.value = user
     }
@@ -33,7 +46,7 @@ export const useAuthStore = defineStore('auth', ()=>{
         isLoggedIn.value = false
         removeLocalToken()
         setUser(null)
-        // getActivePinia()._s.forEach(store => store.$reset());
+        reset_all_stores()
         router.push('/account/login')
     }
 
@@ -144,7 +157,7 @@ export const useAuthStore = defineStore('auth', ()=>{
 
     }
     return {
-
+        $reset,
         isAuthenticated,
         isSuperUser,
         currentUser,

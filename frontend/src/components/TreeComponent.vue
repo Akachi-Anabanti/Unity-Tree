@@ -1,10 +1,11 @@
 <script setup>
-  import { nextTick, onUpdated, onMounted, ref, watch, watchEffect} from 'vue';
+  import { onMounted, ref, watchEffect} from 'vue';
   import { VueDraggableNext as draggable } from 'vue-draggable-next';
   import memberCard from './memberCard.vue';
   import { useAlertStore } from '@/stores/alert';
   import { useFamilyStore } from '@/stores/family';
-  import adjustHeight from '@/_helpers';
+import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 
   const props = defineProps({
@@ -16,13 +17,12 @@
 
 
   const useAlert = useAlertStore()
-  const useFamily = useFamilyStore()
+  const useFamily = useFamilyStore();
 
-  //memberId
+  const router = useRouter()
 
   const container = ref(null);
-  const familyMembers = ref({})
-  familyMembers.value = useFamily.familyMembers
+  const {familyMembers} = storeToRefs(useFamily)
 
   const showConfirmModal = ref(false)
   const modalRemovePerson = ref({})
@@ -32,7 +32,7 @@
 
   const isLoading = ref(true)
 
-  //options for the modal button
+
   const modalButtonOptions = ref({
     color:"danger",
     hoverMaskColor:"#ffff"
@@ -43,21 +43,11 @@
       isLoading.value = false
       if (!useFamily.isFamilyEmpty){
         // adjust the height if the family is not empty
-        // adjustHeight(container)
       }
   });
 
-  onUpdated(() => {
-            adjustHeight(container)
-         })
 
   // Watches for changes in the length of the children value
-        watch(
-          () => useFamily.numberOfChildren,
-          () => nextTick(() => {
-              adjustHeight(container)
-          })
-        )
 
   const handleModalOk = async (hide) => {
     // set modeldelte value
@@ -75,41 +65,36 @@
 
   // watches for the change in value of confirmModal.delte value
   // and sends the dispatches
-  watchEffect(()=>{
+  watchEffect(async()=>{
     if (confirmModalDelete.value){
-      useFamily.dispatchDeleteFamilyMember(modalRemovePersonFamId.value, modalRemovePerson.value.id)
-      .then((res) =>{
-        if(res.success) {
-          const message = `${modalRemovePerson.value.name} removed!`;
-          useAlert.dispatchShowMainAlertSuccess(message);
-        }else if (!res.success && res.status === 401){
-          useAlert.dispatchShowMainAlertFailure('Server did not return any response!')
-
-        } else {
-          useAlert.dispatchShowMainAlertFailure("failed to remove member! :(");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        useAlert.dispatchShowMainAlertFailure("failed to remove member! :(")
-      });
+      try {
+          const {success} = await useFamily.dispatchDeleteFamilyMember(modalRemovePersonFamId.value, modalRemovePerson.value.id)
+          if (success){
+            const message = `${modalRemovePerson.value.name} removed!`;
+            useAlert.dispatchShowMainAlertSuccess(message);
+          } else {
+            useAlert.dispatchShowMainAlertFailure("failed to remove member! try again :(");
+          }
+      } catch (error) {
+        console.error(error)
+      }
 
       confirmModalDelete.value = !confirmModalDelete.value
     }
   });
-
-  //tries to recalulate height
   
-
-  async function getMemberFamily (memberId) {
-    // Fetch the new family data based on memberId
-    await useFamily.dispatchGetFamily(memberId)
-    .then(() =>{
-    }).catch((error) =>{
-      console.error(error)
-    })
-
+  function getMemberFamily (memberId) {
+    router.push("/tree", {familyId:memberId})
 }
+// function adjustHeight() {
+//     const cards = container.value.querySelectorAll('.children-card');
+//     const lastCard = cards[cards.length -1];
+//     const rectContainer = container.value.getBoundingClientRect();
+//     const rectLastCard = lastCard.getBoundingClientRect();
+//     const height = rectContainer.height - (rectLastCard.height / 2);
+//     container.value.style.setProperty('--dynamic-height', `${height}px`);
+//   }
+
 </script>
 
 

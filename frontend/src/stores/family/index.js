@@ -5,16 +5,26 @@ import { computed, ref} from 'vue'
 
 export const useFamilyStore =  defineStore('family',() =>{
 
-    const familyMembers = ref({})
+    let familyMembers = ref({})
     const memberInfo = ref({})
     const familyData = ref({})
-
+    const isFamilyEmpty = ref(true)
     const hasFamily = ref(false)
 
-    const numberOfChildren = computed(() => familyMembers.value.children.length)
-    const isFamilyEmpty = ref(true)
+    const numberOfChildren = computed(() => familyMembers.value && familyMembers.value.children ? familyMembers.value.children.length : 0)
     const getFamilyName = computed(() => familyData.value.name)
     const getFamilyId = computed(() => familyData.value.id)
+
+
+    // resets the store to empty state
+    function $reset(){
+        familyMembers.value = {}
+        memberInfo.value = {}
+        familyData.value = {}
+        hasFamily.value = false
+        isFamilyEmpty.value = true
+    }
+
 
     const getChildIdx = (person) => {
         return familyMembers.value.children.findIndex((cd) => cd.id === person.id)
@@ -376,6 +386,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     } 
 
     return {
+        $reset,
         initFamily,
         dispatchGetFamily,
         dispatchCreateFamily,

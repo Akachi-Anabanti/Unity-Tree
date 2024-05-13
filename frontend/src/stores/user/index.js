@@ -7,10 +7,18 @@ import { computed, reactive} from "vue";
 export const useUserStore = defineStore('userStore', () =>{
 
     const authStore = useAuthStore()
+
+
     let familiesCreated = reactive([])
 
     const numberOfFamiliesCreated = computed (() => familiesCreated.length)
     const isNumberNotZero = computed (() => numberOfFamiliesCreated.value > 0) 
+
+
+    function $reset(){
+        familiesCreated=[]
+    }
+
 
     const getFamily = ()=>{
         return familiesCreated
@@ -126,6 +134,7 @@ export const useUserStore = defineStore('userStore', () =>{
     }
 
     return {
+        $reset,
         isNumberNotZero,
         numberOfFamiliesCreated,
         getFamily,
