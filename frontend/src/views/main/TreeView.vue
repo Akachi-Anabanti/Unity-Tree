@@ -5,7 +5,7 @@
     import { onBeforeMount, ref } from 'vue';
     import { useAlertStore } from '@/stores/alert';
     import { useFamilyStore } from '@/stores/family';
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
 
 
     const router = useRouter()
@@ -23,6 +23,10 @@ import { useRouter } from 'vue-router';
             useAlert.dispatchShowMainAlertFailure("This family does not exist consider creating it")
             router.push('/')
         }
+    })
+
+    onBeforeRouteLeave(()=>{
+        useFamily.$reset()
     })
 
 

@@ -1,7 +1,7 @@
 import { API } from "@/services";
 import { defineStore } from "pinia";
 import { useAuthStore } from "../auth";
-import { computed, reactive} from "vue";
+import {  computed, reactive} from "vue";
 
 
 export const useUserStore = defineStore('userStore', () =>{
@@ -9,20 +9,19 @@ export const useUserStore = defineStore('userStore', () =>{
     const authStore = useAuthStore()
 
 
-    let familiesCreated = reactive([])
-
-    const numberOfFamiliesCreated = computed (() => familiesCreated.length)
-    const isNumberNotZero = computed (() => numberOfFamiliesCreated.value > 0) 
-
+    let familiesCreated = reactive({data:null})
+    
+    const numberOfFamiliesCreated = computed(() => familiesCreated.data? familiesCreated.data.length : 0)
+    
+    const isNumberFamiliesCreatedZero = computed(() => numberOfFamiliesCreated.value === 0)
+    
 
     function $reset(){
-        familiesCreated=[]
+        familiesCreated.data=[]
     }
 
 
-    const getFamily = ()=>{
-        return familiesCreated
-    }
+    const getFamily = computed(()=>familiesCreated.data)
 
     async function dispatchGetUser(){
         try {
@@ -116,7 +115,7 @@ export const useUserStore = defineStore('userStore', () =>{
         try {
             const {status, data} = await API.users.getFamiliesCreated()
             if (status === 200) {
-                familiesCreated = data
+                familiesCreated.data= data
                 return {
                     success:true,
                     content:null
@@ -135,7 +134,7 @@ export const useUserStore = defineStore('userStore', () =>{
 
     return {
         $reset,
-        isNumberNotZero,
+        isNumberFamiliesCreatedZero,
         numberOfFamiliesCreated,
         getFamily,
         dispatchGetUser,

@@ -5,7 +5,7 @@ import { useUserStore } from "../user";
 import { useAlertStore } from "../alert";
 import { getCookie, saveLocalToken, removeLocalToken, getLocalToken } from "@/utils";
 import {useRouter} from "vue-router";
-import reset_all_stores from "..";
+import { useFamilyStore } from "../family"
 
 export const useAuthStore = defineStore('auth', ()=>{
 
@@ -21,6 +21,8 @@ export const useAuthStore = defineStore('auth', ()=>{
     const isSuperUser = ref(false)
     const currentUser = ref(null)
     const returnUrl = ref(null)
+
+    const getCurrentUserId = computed(() => currentUser.value.id)
 
 
     // resets the store
@@ -46,7 +48,14 @@ export const useAuthStore = defineStore('auth', ()=>{
         isLoggedIn.value = false
         removeLocalToken()
         setUser(null)
-        reset_all_stores()
+
+        // resets all the stores
+        useUserStore().$reset()
+        useFamilyStore().$reset()
+        useAlertStore().$reset()
+        $reset()
+        
+        // redirects to login page
         router.push('/account/login')
     }
 
@@ -161,6 +170,7 @@ export const useAuthStore = defineStore('auth', ()=>{
         isAuthenticated,
         isSuperUser,
         currentUser,
+        getCurrentUserId,
         setReturnUrl,
         dispatchLogin,
         dispatchLogout,

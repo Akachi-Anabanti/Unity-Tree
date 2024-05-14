@@ -16,7 +16,7 @@ const alertStore = useAlertStore()
 <template>
     <div class="auth-container">
         <div class="auth-container-left">
-            Contains other info graphics
+           <img src="@/assets/connect_teams.svg" width="80%" height="80%" style="margin-top: 40px;"/>
         </div>
         <div class="auth-container-right">
             <div class="main-alert">
@@ -27,7 +27,12 @@ const alertStore = useAlertStore()
                     :show-alert-failure="alertStore.showMainAlertFailure"
                 />
             </div>
-            <RouterView />
+            <div style="height: 30%;">
+                <img src="@/assets/logo.svg" alt="" height="100%" width="100%"/>
+            </div>
+            <div style="height: 70%; overflow-y:auto;">
+                <RouterView />
+            </div>
         </div>
     </div>
 </template>
@@ -46,12 +51,17 @@ const alertStore = useAlertStore()
     }
     .auth-container-left{
         background-attachment: fixed;
-        background-color: rgb(123, 123, 245);
+        border-right: dashed 0.5px grey;
         
     }
-    @media (max-width: 600px){
+    @media (max-width: 500px){
+        .auth-container-left{
+            display: none;
+            transition: ease-out;
+        }
         .auth-container {
             grid-template-columns: 1fr;
+
         }
     }
 </style>

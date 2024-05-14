@@ -1,13 +1,12 @@
 <script setup>
 
 import {useUserStore} from '@/stores/user'
-import { onBeforeMount, reactive} from 'vue';
+import { onBeforeMount} from 'vue';
 
 const userStore = useUserStore()
-let families = reactive([])
-
+let families
 onBeforeMount(()=>{
-    families = userStore.getFamily() 
+    families = userStore.getFamily
 })
 
 </script>

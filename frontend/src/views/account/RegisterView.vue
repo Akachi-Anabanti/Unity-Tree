@@ -118,7 +118,7 @@ function isValidPassword(password) {
                 @click="validate() && submit()"
                 color="success"
                 class="submit-btn"
-                >Submit
+                >Register
             </VaButton>
         </VaForm>
     </div>

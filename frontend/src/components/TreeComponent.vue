@@ -1,11 +1,12 @@
 <script setup>
-  import { onMounted, ref, watchEffect} from 'vue';
+  import { onMounted, ref, watchEffect, nextTick} from 'vue';
   import { VueDraggableNext as draggable } from 'vue-draggable-next';
   import memberCard from './memberCard.vue';
   import { useAlertStore } from '@/stores/alert';
   import { useFamilyStore } from '@/stores/family';
-import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia';
+  import { useRouter } from 'vue-router';
+  import { storeToRefs } from 'pinia';
+  import Spinner from './utilities/spinnerComp.vue';
 
 
   const props = defineProps({
@@ -41,8 +42,9 @@ import { storeToRefs } from 'pinia';
   onMounted(async() => {
       await useFamily.dispatchGetFamilyMembers(props.familyId)
       isLoading.value = false
-      if (!useFamily.isFamilyEmpty){
+      if (!useFamily.isFamilyEmpty && useFamily.numberOfChildren > 0){
         // adjust the height if the family is not empty
+        adjustHeight()
       }
   });
 
@@ -58,7 +60,7 @@ import { storeToRefs } from 'pinia';
   // Handles Child member removal
   const promptDelete = (person) => {
     modalRemovePerson.value = person
-    modalRemovePersonFamId.value = useFamily.familyData.id
+    modalRemovePersonFamId.value = useFamily.getFamilyId
     showConfirmModal.value = true
 
   }
@@ -70,7 +72,7 @@ import { storeToRefs } from 'pinia';
       try {
           const {success} = await useFamily.dispatchDeleteFamilyMember(modalRemovePersonFamId.value, modalRemovePerson.value.id)
           if (success){
-            const message = `${modalRemovePerson.value.name} removed!`;
+            const message = `${modalRemovePerson.value.first_name} removed!`;
             useAlert.dispatchShowMainAlertSuccess(message);
           } else {
             useAlert.dispatchShowMainAlertFailure("failed to remove member! try again :(");
@@ -86,14 +88,24 @@ import { storeToRefs } from 'pinia';
   function getMemberFamily (memberId) {
     router.push("/tree", {familyId:memberId})
 }
-// function adjustHeight() {
-//     const cards = container.value.querySelectorAll('.children-card');
-//     const lastCard = cards[cards.length -1];
-//     const rectContainer = container.value.getBoundingClientRect();
-//     const rectLastCard = lastCard.getBoundingClientRect();
-//     const height = rectContainer.height - (rectLastCard.height / 2);
-//     container.value.style.setProperty('--dynamic-height', `${height}px`);
-//   }
+// watch(
+//   ()=> useFamily.numberOfChildren,
+//   ()=> { adjustHeight()
+//   })
+
+function adjustHeight() {
+  if(useFamily.numberOfChildren > 0){
+    nextTick(() => {
+        const cards = container.value.querySelectorAll('.children-card');
+        const lastCard = cards[cards.length -1];
+        const rectContainer = container.value.getBoundingClientRect();
+        const rectLastCard = lastCard.getBoundingClientRect();
+        const height = rectContainer.height - (rectLastCard.height / 2);
+        container.value.style.setProperty('--dynamic-height', `${height}px`);
+    });
+  }
+
+}
 
 </script>
 
@@ -107,11 +119,11 @@ import { storeToRefs } from 'pinia';
       :child:okButton="modalButtonOptions"
       :beforeOk="handleModalOk"
      >
-     Remove <em>{{ modalRemovePerson.name }}</em> from family?
+     Remove <em>{{ modalRemovePerson.first_name }}</em> from family?
      </VaModal>
 
      <div v-if="isLoading">
-      Loading...
+      <Spinner />
      </div>
      <div v-else>
       <div class="tree-container" v-if="!useFamily.isFamilyEmpty">
@@ -146,5 +158,5 @@ import { storeToRefs } from 'pinia';
 </template>
 
 <style scoped>
-@import '@/assets/tree.css';
+@import '@/assets/new_tree.css';
 </style>

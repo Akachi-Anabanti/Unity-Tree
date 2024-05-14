@@ -1,12 +1,18 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth';
+import { useFamilyStore } from '@/stores/family';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
+
+const authStore = useAuthStore()
+const useFamily = useFamilyStore()
 
  const person = defineProps({
   id:{type:String},
   img:{},
   first_name: {type: String, required:true},
+  last_name:{},
   date_of_birth: { required: true},
   role:{type: String, required:true}
   
@@ -22,7 +28,7 @@ const router = useRouter()
 
   const handleProfileClick = () =>{
 
-    router.push({ name: 'Profile', params: { id: person.id } })
+    router.push({ name: 'profile', params: { userId: person.id } })
   }
 
 
@@ -33,11 +39,11 @@ const router = useRouter()
 
 <template>
   <VaCard :bordered="false" @click="handleCardClick">
-    <VaIcon name="delete" size="large" @click.stop="handleRemove" color="danger"/>
+    <VaIcon name="delete" size="large" @click.stop="handleRemove" color="danger" v-if="authStore.getCurrentUserId === useFamily.getCreatorId"/>
     <div class="card-avatar">
       <VaAvatar :src="person.img ? person.img : 'https://randomuser.me/api/portraits/men/1.jpg'" size="large" @click.stop="handleProfileClick"/>
     </div>
-    <VaCardTitle class="mb-4">{{ person.first_name }}</VaCardTitle>
+    <VaCardTitle class="mb-4">{{ person.first_name }} {{ person.last_name }}</VaCardTitle>
     <VaCardContent>{{ person.date_of_birth }}</VaCardContent>
   </VaCard>
 </template>

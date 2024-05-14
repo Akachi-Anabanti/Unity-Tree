@@ -14,6 +14,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     const numberOfChildren = computed(() => familyMembers.value && familyMembers.value.children ? familyMembers.value.children.length : 0)
     const getFamilyName = computed(() => familyData.value.name)
     const getFamilyId = computed(() => familyData.value.id)
+    const getCreatorId = computed(() => familyData.value.creator_id)
 
 
     // resets the store to empty state
@@ -79,15 +80,14 @@ export const useFamilyStore =  defineStore('family',() =>{
         }
     }
     const deleteFamilyMember = (person) => {
-
         if (person.role === 'child'){
-            const index = familyMembers.value.children.findIndex((cd) => cd === person)
+            const index = familyMembers.value.children.findIndex((cd) => cd.id === person.id)
             if (index !== -1) {
               familyMembers.value.children.splice(index, 1)
             }
         } else
         {
-            delete familyMembers.value[parent.role];
+            delete familyMembers.value[person.role];
         }
 
     }
@@ -163,7 +163,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async function dispatchUpdateFamily(familyId, input){
         try {
             const {status, data} = await API.family.updateFamily(familyId, input);
-            if (status === 201){
+            if (status === 200){
                 updateFamily(data)
                 return {
                     success: true,
@@ -190,7 +190,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async function dispatchDeleteFamily(familyId){
         try {
             const {status, data} = await API.family.deleteFamily(familyId);
-            if (status === 201){
+            if (status === 200){
                 deleteFamily(data)
                 return {
                     success: true,
@@ -217,7 +217,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async  function dispatchGetFamilyMember(memberId) {
         try {
             const {status, data} = await API.family.getFamilyMember(memberId)
-            if (status === 201) {
+            if (status === 200) {
 
                 initMemberInfo(data)
                 return {
@@ -244,7 +244,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async  function dispatchCreateFamilyMember(familyId, input) {
         try {
             const {status, data} = await API.family.createFamilyMember(familyId, input)
-            if (status === 200) {
+            if (status === 201) {
 
                 createFamilyMember(data)
                 return {
@@ -271,7 +271,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async  function dispatchUpdateFamilyMember(memberId) {
         try {
             const {status, data} = await API.family.updateFamilyMember(memberId)
-            if (status === 201) {
+            if (status === 200) {
 
                 updateFamilyMember(data)
                 return {
@@ -297,7 +297,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async  function dispatchDeleteFamilyMember(familyId, memberId) {
         try {
             const {status, data} = await API.family.deleteFamilyMember(familyId, memberId)
-            if (status === 201) {
+            if (status === 200) {
 
                 deleteFamilyMember(data)
                 return {
@@ -361,7 +361,7 @@ export const useFamilyStore =  defineStore('family',() =>{
     async function dispatchDeleteFamilyMembers(familyId) {
         try {
             const {status} = await API.family.deleteFamilyMembers(familyId)
-            if (status === 200) {
+            if (status === 204) {
                 deleteFamilyMembers()
 
                 return {
@@ -406,6 +406,7 @@ export const useFamilyStore =  defineStore('family',() =>{
         getFamilyId,
         memberInfo,
         hasFamily,
+        getCreatorId
     }
 
 })

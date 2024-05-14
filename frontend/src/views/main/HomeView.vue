@@ -1,40 +1,39 @@
 <script setup>
-  import { onBeforeMount, ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import { useUserStore } from '@/stores/user';
 
   import AddFamily from "@/components/utilities/createFamilyButton.vue"
   import ShowFamily from "@/components/utilities/ShowFamilyComponent.vue"
+  import Spinner from "@/components/utilities/spinnerComp.vue"
+// import { storeToRefs } from 'pinia';
 
 
   const isLoading = ref(true)
-  const userStore = useUserStore();
-    
-
-  onBeforeMount(async()=>{
+  
+  onMounted(async()=>{
     await userStore.dispatchGetFamiliesCreated()
     isLoading.value = false
   })
 
+  const userStore = useUserStore();
 </script>
 
 <template>
 
     <!-- Modal Component -->
 
-
     <!-- The family tree component -->
     <div v-if="isLoading">
-      Loading...
+      <Spinner />
+    </div>
+    <div v-else-if="!userStore.isNumberFamiliesCreatedZero">
+        <ShowFamily />
     </div>
     <div v-else>
-      <div v-if="userStore.isNumberNotZero">
-        <ShowFamily />
-      </div>
-      <div v-else>
         <!-- Display a modal here -->
         <AddFamily />
-      </div>
     </div>
+ 
 </template>
 
 <style scoped>

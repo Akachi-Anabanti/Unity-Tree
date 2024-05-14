@@ -64,7 +64,7 @@ const router = createRouter({
 
 router.beforeEach(async(to) => {
   //clear alerts on route change
-  useAlertStore().$reset
+  useAlertStore().$reset()
 
   const publicPages =['/account/login', '/account/register', '/about']
   const authRequired = !publicPages.includes(to.path);

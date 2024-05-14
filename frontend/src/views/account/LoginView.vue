@@ -55,7 +55,7 @@ const submit = async() =>{
       <VaInput
         v-model="form.password"
         :type="isPasswordVisible.value ? 'text' : 'password'"
-        label="Password with toggle"
+        label="Password"
         placeholder="#########"
         @click-append-inner="isPasswordVisible.value = !isPasswordVisible.value"
         :rules="[
@@ -74,7 +74,7 @@ const submit = async() =>{
       @click="validate() && submit()"
       color="success"
       class="submit-btn">
-      Submit
+      Login
     </VaButton>
   </VaForm>
 
@@ -96,7 +96,8 @@ const submit = async() =>{
             display: grid;
             grid-template-columns: 1fr;
             margin: auto;
-            width: 70%;
+            height: 50%;
+            width: 50%;
         }
 
         .submit-btn{
@@ -107,5 +108,6 @@ const submit = async() =>{
         .alt-auth{
             justify-content: space-around;
             margin: 10px;
+            justify-content: right;
         }
 </style>
