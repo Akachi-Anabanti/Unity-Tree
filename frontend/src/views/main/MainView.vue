@@ -32,18 +32,19 @@
         />
       </template>
       <template #right>
+        <!-- <VaNavbarItem>
+          <VaIcon color="danger" name="notification"/>
+        </VaNavbarItem> -->
+        
 
         <RouterLink to="/profile">
           <div style="margin-right: 3rem;">
-            <VaAvatar
-          @click="page='profile'"
-          
-        />
+            <VaAvatar src="'https://randomuser.me/api/portraits/men/1.jpg'"
+            @click="page='profile'"/>
           </div>
-   
-      </RouterLink>
-
+        </RouterLink>
       </template>
+
       <!-- Center of top navbar: Brand content -->
       <template #center>
         <VaNavbarItem class="font-bold text-lg">

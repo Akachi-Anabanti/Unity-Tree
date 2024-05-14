@@ -26,6 +26,29 @@ const router = createRouter({
           props:true
         },
         {
+          path: "/family",
+          name: "family",
+          children:[
+            {
+              path:"/create",
+              name:"create-family",
+              component: () => import("@/views/main/family/createFamilyView.vue")
+            },
+            {
+              path: "/view/:familyId",
+              name:"view-family",
+              component: ()=> import("@/views/main/family/familyProfileView.vue"),
+              props:true
+            },
+            {
+              path:"/edit/:familyId",
+              name:"edit-family",
+              component: ()=> import("@/views/main/family/editFamilyProfileView.vue"),
+              props:true
+            }
+          ]
+        },
+        {
           path: "/profile/:userId",
           name: "profile",
           redirect: "view",

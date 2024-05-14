@@ -33,8 +33,8 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router';
 // Function to handle Modal Form Submit
     const handleFormSubmit = async (newMember) => {
         try {
-            const {success} = await useFamily.dispatchCreateFamilyMember(useFamily.getFamilyId, newMember)
-            if (success){
+            const res = await useFamily.dispatchCreateFamilyMember(useFamily.getFamilyId, newMember)
+            if (res.success){
                 const message = `${newMember.firstName} added successfully as ${newMember.role}!`
                 useAlert.dispatchShowModalAlertSuccess(message)
             } else {

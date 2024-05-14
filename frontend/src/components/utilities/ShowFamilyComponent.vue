@@ -2,6 +2,7 @@
 
 import {useUserStore} from '@/stores/user'
 import { onBeforeMount} from 'vue';
+import AddFamily from './createFamilyButton.vue';
 
 const userStore = useUserStore()
 let families
@@ -22,6 +23,7 @@ onBeforeMount(()=>{
             </VaCard>
         </div>
     </div>
+    <AddFamily />
 </template>
 
 

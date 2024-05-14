@@ -20,20 +20,16 @@
 
 <template>
 
-    <!-- Modal Component -->
-
-    <!-- The family tree component -->
     <div v-if="isLoading">
       <Spinner />
     </div>
     <div v-else-if="!userStore.isNumberFamiliesCreatedZero">
+    <!-- The family tree component -->
         <ShowFamily />
     </div>
     <div v-else>
-        <!-- Display a modal here -->
-        <AddFamily />
+        <AddFamily v-bind="showPopover"/>
     </div>
- 
 </template>
 
 <style scoped>

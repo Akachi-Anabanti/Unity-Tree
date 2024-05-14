@@ -1,24 +1,29 @@
+
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
+function addFam() {
+  router.push({ name: 'create-family' })
+}
+</script>
+
+
 <template>
     <div class="add-card">
       <h2>Add New Family</h2>
-      <button class="add-button">+</button>
+      <VaButton class="add-button" @click="addFam">+</VaButton>
     </div>
-  </template>
+</template>
   
-  <script setup>
-  
-  // function addElement(){
-  //   // adds the new element
-  // }
-  </script>
-  
-  <style scoped>
-  .add-card {
-    width: 200px;
-    height: 200px;
-    border: 1px solid var(--va-background-border);
-    border-radius: 10px;
-    display: flex;
+<style scoped>
+.add-card {
+  width: 200px;
+  height: 200px;
+  border: 1px solid var(--va-background-border);
+  border-radius: 10px;
+  display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;

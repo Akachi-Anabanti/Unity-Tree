@@ -33,7 +33,7 @@ watch(() => basic.value, () => {
 
 const validateBirthday = (value) => {
   if (!value) {
-    return 'Field is required'
+    return false
   }
 }
 
@@ -44,6 +44,10 @@ const submit =  () => {
   resetValidation()
   reset()
 }
+
+// the end date of the date picker
+// gets the current year
+const date_picker_end_date = new Date().getFullYear()
 </script>
 
 
@@ -62,6 +66,14 @@ const submit =  () => {
         label="Birth Date"
         manual-input
         clearable
+        :start-year=1600
+        :end-year=date_picker_end_date
+        highlight-weekend
+        :allowed-days="(date) => {
+          const today = new Date()
+          today.setHours(0,0,0,0)
+          return date <= today
+        }"
       />
       <!-- <div>
         <span class="va-title">Gender</span>

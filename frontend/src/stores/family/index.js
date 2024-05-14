@@ -27,6 +27,23 @@ export const useFamilyStore =  defineStore('family',() =>{
     }
 
 
+
+       // checks if the  family created is empty
+       function isEmpty(obj) {
+        for(let key in obj) {
+            if(typeof obj[key] === 'object' && obj[key] !== null) {
+                if(!isEmpty(obj[key])) {
+                    return false;
+                }
+            } else if(Array.isArray(obj[key]) && obj[key].length > 0) {
+                return false;
+            } else if(obj[key] !== null && obj[key] !== undefined && obj[key] !== '') {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const getChildIdx = (person) => {
         return familyMembers.value.children.findIndex((cd) => cd.id === person.id)
     }
@@ -47,18 +64,23 @@ export const useFamilyStore =  defineStore('family',() =>{
         familyMembers.value = data
     }
 
+    //  creates a new family
     const createFamily = (data) => {
         familyData.value = data
     }
     
+    //  updates the family information
     const updateFamily = (data) => {
         familyData.value = data
     }
+
+    // deletes the family details
 
     const deleteFamily = () => {
         familyData.value = {}
     }
 
+    // set the member information
     const initMemberInfo = (person) => {
         memberInfo.value = person
     }
@@ -67,8 +89,12 @@ export const useFamilyStore =  defineStore('family',() =>{
         if (person.role === 'child'){
             familyMembers.value.children.push(person)
         } else {
-            familyMembers[person.role] = person
+            familyMembers.value[person.role] = person
         }
+
+        // updates the isFamilyEmpty to false
+        // as a new member has been created
+        isFamilyEmpty.value = false
 
     }
     const updateFamilyMember = (person) => {
@@ -81,13 +107,20 @@ export const useFamilyStore =  defineStore('family',() =>{
     }
     const deleteFamilyMember = (person) => {
         if (person.role === 'child'){
-            const index = familyMembers.value.children.findIndex((cd) => cd.id === person.id)
+          
+            const index = familyMembers.value.children.findIndex((cd) => cd.id === person.member_id)
             if (index !== -1) {
               familyMembers.value.children.splice(index, 1)
             }
         } else
         {
             delete familyMembers.value[person.role];
+        }
+
+        // reset the value to empty if the 
+        // familymembers are all deleted
+        if (isEmpty(familyMembers.value)){
+            isFamilyEmpty.value = true
         }
 
     }
@@ -245,7 +278,6 @@ export const useFamilyStore =  defineStore('family',() =>{
         try {
             const {status, data} = await API.family.createFamilyMember(familyId, input)
             if (status === 201) {
-
                 createFamilyMember(data)
                 return {
                     success:true,
