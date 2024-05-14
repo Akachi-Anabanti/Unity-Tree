@@ -33,7 +33,7 @@ def delete_user(user_id):
     if not user:
         return not_found("User does not exist")
     db.session.delete(user)
-    db.session.commit()
+    db.session.commit(), 204
 
     return jsonify({"message": "successfully deleted"})
 

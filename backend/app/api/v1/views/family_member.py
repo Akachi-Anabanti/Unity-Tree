@@ -105,7 +105,7 @@ def make_family():
     family = models.Family.create_family(name=name, creator_id=current_user.id)
     db.session.add(family)
     db.session.commit()
-    return family.to_dict()
+    return family.to_dict(), 201
 
 
 @fam_bp.route("family/member/<string:family_id>/", methods=["POST"])
@@ -138,7 +138,7 @@ def create_family_member(family_id):
     db.session.add(fam_member)
     db.session.commit()
 
-    return new_member.to_dict(family_id)
+    return new_member.to_dict(family_id), 201
 
 
 # UPDATE ROUTES
@@ -150,7 +150,7 @@ def update_family(family_id):
         return not_found("Family not found")
     family.update_family(**request.json)
     db.session.commit()
-    return family
+    return family, 200
 
 
 @fam_bp.route("family/member/<string:member_id>/", methods=["PUT"])
@@ -162,7 +162,7 @@ def update_family_member(member_id):
 
     member.update_member(**request.json)
     db.session.commit()
-    return member.basic_info_dict()
+    return member.basic_info_dict(), 200
 
 
 # DELETE ROUTES
@@ -175,7 +175,7 @@ def delete_family(family_id):
     family_dict = family.to_dict()
     db.session.delete(family)
     db.session.commit()
-    return family_dict
+    return family_dict, 200
 
 
 @fam_bp.route(
@@ -190,7 +190,7 @@ def delete_family_member(family_id, member_id):
     member_dict = member.to_dict()
     db.session.delete(member)
     db.session.commit()
-    return jsonify(member_dict)
+    return jsonify(member_dict), 200
 
 
 @fam_bp.route("family/members/<string:family_id>/", methods=["DELETE"])
@@ -203,4 +203,4 @@ def delete_family_members(family_id):
     family_members = models.FamilyMember.delete_family_members(family_id)
     for member in family_members:
         db.session.delete(member)
-    db.session.commit()
+    db.session.commit(), 204
