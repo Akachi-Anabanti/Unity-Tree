@@ -53,9 +53,7 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
         sa.String(255), sa.ForeignKey("User.id"), nullable=True
     )
     user = so.relationship("User", backref="related_member")
-    families = so.relationship(
-        "FamilyMember", back_populates="member", cascade="all, delete-orphan"
-    )
+    families = so.relationship("FamilyMember", back_populates="member")
 
     def update_member(self, **kwargs):
         self.update(**kwargs)

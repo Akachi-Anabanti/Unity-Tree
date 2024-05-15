@@ -21,7 +21,7 @@ class Family(BaseModel, db.Model):
     )
 
     members = so.relationship(
-        "FamilyMember", back_populates="family", cascade="all,delete"
+        "FamilyMember", back_populates="family", cascade="all, delete"
     )
     media = so.relationship("Media", back_populates="family", cascade="all,delete")
 
