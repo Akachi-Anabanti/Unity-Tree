@@ -15,6 +15,6 @@ if [ "$ENV"  == "production" ]; then
 	echo -e "${GREEN}Starting App in Production Mode..${NC}"
 	gunicorn -w4 run:app
 else
-	echo "${GREEN}Starting App in Development Mode.. ${NC}"
-	flask run
+	echo -e "${GREEN}Starting App in Development Mode.. ${NC}"
+	flask run --debug -p 8000
 fi

@@ -10,8 +10,18 @@ from app import db
 class Family(BaseModel, db.Model):
     __tablename__ = "Family"
     name: so.Mapped[str] = so.mapped_column(sa.String(125))
+    country = so.Mapped[str] = so.mapped_column(
+        sa.String(125), nullable=True, index=True
+    )
+    state = so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
+    lga = so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
+    community = so.Mapped[str] = so.mapped_column(
+        sa.String(125), nullable=True, index=True
+    )
+
     members = so.relationship("FamilyMember", back_populates="family")
     media = so.relationship("Media", back_populates="family")
+
     creator_id = so.mapped_column(
         sa.String(255), sa.ForeignKey("User.id", name="fk_creator_id"), nullable=False
     )
