@@ -13,9 +13,9 @@ class Family(BaseModel, db.Model):
     country = so.Mapped[str] = so.mapped_column(
         sa.String(125), nullable=True, index=True
     )
-    state = so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
-    lga = so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
-    community = so.Mapped[str] = so.mapped_column(
+    state: so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
+    lga: so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
+    community: so.Mapped[str] = so.mapped_column(
         sa.String(125), nullable=True, index=True
     )
 
