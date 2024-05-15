@@ -1,8 +1,12 @@
 import { API } from '@/services'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useUserStore } from '../user'
 
 export const useFamilyStore = defineStore('family', () => {
+  const userStore = useUserStore()
+
+
   let familyMembers = ref({ father: null, mother: null, children: [] })
   const memberInfo = ref({})
   const familyData = ref({})
@@ -73,7 +77,10 @@ export const useFamilyStore = defineStore('family', () => {
 
   // deletes the family details
 
-  const deleteFamily = () => {
+  const deleteFamily = (data) => {
+    // This userStore.deleteFamily ensures that the list of families created by user is updated 
+    // to reflect on the DOM 
+    userStore.deleteFamily(data)
     familyData.value = {}
   }
 

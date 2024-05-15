@@ -2,6 +2,7 @@ import { API } from '@/services'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '../auth'
 import { computed, reactive } from 'vue'
+import family from '@/services/family'
 
 export const useUserStore = defineStore('userStore', () => {
   const authStore = useAuthStore()
@@ -19,6 +20,13 @@ export const useUserStore = defineStore('userStore', () => {
   }
 
   const getFamily = computed(() => familiesCreated.data)
+
+  const deleteFamily = (family) =>{
+    const index = familiesCreated.data.findIndex((fm) => fm.id === family.id)
+    if (index !== -1) {
+      familiesCreated.data.splice(index, 1)
+    }
+  }
 
   async function dispatchGetUser() {
     try {
@@ -120,6 +128,7 @@ export const useUserStore = defineStore('userStore', () => {
     isNumberFamiliesCreatedZero,
     numberOfFamiliesCreated,
     getFamily,
+    deleteFamily,
     dispatchGetUser,
     dispatchDeleteUser,
     dispatchUpdateUser,

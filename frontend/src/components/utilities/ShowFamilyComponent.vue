@@ -6,14 +6,17 @@ import { useAuthStore } from '@/stores/auth'
 import { useFamilyStore } from '@/stores/family'
 import { useRouter } from 'vue-router'
 import { useAlertStore } from '@/stores/alert'
+import { storeToRefs } from 'pinia'
 
-// let families;
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
 const useFamily = useFamilyStore()
 const useAlert = useAlertStore()
 const router = useRouter()
+
+const family = ref(userStore.getFamily)
+
 
 const showConfirmModal = ref(false)
 const modalRemoveFamily = ref({})
@@ -35,7 +38,6 @@ const handleModalOk = async (hide) => {
 
 // Handles Child member removal
 const promptDelete = (family) => {
-  console.log(family)
   modalRemoveFamily.value = family
   modalRemoveFamId.value = modalRemoveFamily.value.id
   showConfirmModal.value = true
@@ -78,7 +80,7 @@ const navigateToTree = async(familyId) => {
   </VaModal>
 
   <div class="fam-cards">
-    <div v-for="family in userStore.getFamily" :key="family.id" class="fam-card">
+    <div v-for="family in family" :key="family.id" class="fam-card">
       <VaCard :bordered="false" stripe @click="navigateToTree(family.id)">
         <VaCardTitle>{{ family.name }}</VaCardTitle>
         <VaCardContent>
