@@ -10,7 +10,7 @@ from app import db
 class Family(BaseModel, db.Model):
     __tablename__ = "Family"
     name: so.Mapped[str] = so.mapped_column(sa.String(125))
-    country = so.Mapped[str] = so.mapped_column(
+    country: so.Mapped[str] = so.mapped_column(
         sa.String(125), nullable=True, index=True
     )
     state: so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
