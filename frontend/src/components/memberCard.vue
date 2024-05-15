@@ -1,47 +1,50 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth';
-import { useFamilyStore } from '@/stores/family';
-import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'
+import { useFamilyStore } from '@/stores/family'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const authStore = useAuthStore()
 const useFamily = useFamilyStore()
 
- const person = defineProps({
-  id:{type:String},
-  img:{},
-  first_name: {type: String, required:true},
-  last_name:{},
-  date_of_birth: { required: true},
-  role:{type: String, required:true}
-  
- })
+const person = defineProps({
+  id: { type: String },
+  img: {},
+  first_name: { type: String, required: true },
+  last_name: {},
+  date_of_birth: { required: true },
+  role: { type: String, required: true }
+})
 
-  const emit = defineEmits(['removeMember', 'cardClick'])
-  const handleRemove = () => {
-    emit('removeMember')
-  }
-  const handleCardClick = () => {
-    emit('cardClick', person.id)
-  }
+const emit = defineEmits(['removeMember', 'cardClick'])
+const handleRemove = () => {
+  emit('removeMember')
+}
+const handleCardClick = () => {
+  emit('cardClick', person.id)
+}
 
-  const handleProfileClick = () =>{
-
-    router.push({ name: 'profile', params: { userId: person.id } })
-  }
-
-
-
+const handleProfileClick = () => {
+  router.push({ name: 'profile', params: { userId: person.id } })
+}
 </script>
-
-
 
 <template>
   <VaCard :bordered="false" @click="handleCardClick">
-    <VaIcon name="delete" size="large" @click.stop="handleRemove" color="danger" v-if="authStore.getCurrentUserId === useFamily.getCreatorId"/>
+    <VaIcon
+      name="delete"
+      size="large"
+      @click.stop="handleRemove"
+      color="danger"
+      v-if="authStore.getCurrentUserId === useFamily.getCreatorId"
+    />
     <div class="card-avatar">
-      <VaAvatar :src="person.img ? person.img : 'https://randomuser.me/api/portraits/men/1.jpg'" size="large" @click.stop="handleProfileClick"/>
+      <VaAvatar
+        :src="person.img ? person.img : 'https://randomuser.me/api/portraits/men/1.jpg'"
+        size="large"
+        @click.stop="handleProfileClick"
+      />
     </div>
     <VaCardTitle class="mb-4">{{ person.first_name }} {{ person.last_name }}</VaCardTitle>
     <VaCardContent>{{ person.date_of_birth }}</VaCardContent>
@@ -57,7 +60,7 @@ const useFamily = useFamilyStore()
   margin-bottom: 20px;
   position: relative;
 }
-.va-card__content{
+.va-card__content {
   padding: 0;
 }
 .va-avatar {
@@ -67,11 +70,11 @@ const useFamily = useFamilyStore()
   align-self: center;
   border: solid 1px blue;
 }
-.card-avatar{
+.card-avatar {
   display: flex;
   justify-content: center;
   align-items: center;
-} 
+}
 .va-card-actions {
   display: flex;
   justify-content: space-between;

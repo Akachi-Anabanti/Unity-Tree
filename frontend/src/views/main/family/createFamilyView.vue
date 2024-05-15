@@ -1,102 +1,117 @@
-
- <template>
-  <VaForm ref="formRef" class="flex flex-col items-baseline gap-6">
+<template>
+  <VaForm ref="formRef" class="form-group gap-6">
     <VaInput
-      v-model="form.firstName"
-      :rules="[(value) => (value && value.length > 0) || 'First name is required']"
-      label="firstName"
-    />
-  
-    <VaInput
-      v-model="form.lastName"
-      :rules="[(value) => (value && value.length > 0) || 'Last name is required']"
-      label="Last Name"
-    />
-    <VaCounter 
-      v-model="form.count"
-      label="Amount"
-      :rules="[(v) => v || 'Field is required', (v) => v < 10 || 'You can not buy less than 10 items']"
-      manual-input
+      v-model="form.Name"
+      :rules="[(value) => (value && value.length > 0) || 'Family name is required']"
+      label="Family Name"
     />
 
     <VaSelect
       v-model="form.country"
       :options="countries"
-      :rules="[(v) => v || 'Field is required', (v) => v === 'ua' ? 'Delivery currently unavailable in your country' : undefined]"
+      :rules="[
+        (v) => v || 'Field is required']"
       label="Country"
+      searchable
+      virtual-scroller
+      clearable
     />
 
-    <VaSlider 
-      v-model="form.amount"
-      :min="1"
-      :max="100"
-      :rules="[(v) => v || 'Field is required', (v) => form.country === 'us' && v > 20 || 'Package to US can not be more than 20kg']"
-      label="Weight, kg"
-      style="width: 100%"
-    />
-  
-    <VaSwitch 
-      v-model="form.notifications"
-      label="Notifications"
-      size="small"
-      :rules="[(v) => v || 'You must agree on notifications']"
-    />
-  
-    <div>
-      <span class="va-title">Payment method</span>
-      <VaOptionList
-        v-model="form.paymentMethod"
-        :options="['Visa', 'MasterCard', 'PayPal']"
-        :rules="[(v) => v === 'PayPal' || 'Only PayPal is currently available']"
-        type="radio"
-      />      
-    </div>
-
-    <VaCheckbox 
-      v-model="form.acknowledgement"
-      :rules="[(v) => v || 'You must agree with terms and conditions']"
-      label="I'm okay if you lose my package"
+    <VaSelect
+      v-model="form.state"
+      :options="states"
+      label="State"
+      searchable
+      virtual-scroller
+      clearable
     />
 
-    <VaButton :disabled="!isValid" @click="validate() && submit()">
-      Submit
-    </VaButton>
+    <VaSelect
+      v-model="form.city"
+      :options="cities"
+      label="City"
+      searchable
+      virtual-scroller
+      allow-create='unique'
+      clearable
+    />
+
+    <VaCheckbox
+      v-model="form.member"
+      label="Are you a member of this family?"
+    />
+
+
+    <VaSelect
+      v-model="form.role"
+      :options="roles"
+      :rules="[
+        (v) => form.member? Boolean(v)|| 'Field is required': true,
+      ]"
+      label="Your role"
+      :disabled="!form.member"
+      clearable
+    />
+
+    <VaButton :disabled="!isValid" @click="validate() && submit()"> Submit </VaButton>
   </VaForm>
-
   <div class="mt-8 flex w-full gap-3 background-element">
-    <VaButton @click="validate() && submit()">
-      Validate
-    </VaButton>
-    <VaButton @click="resetValidation">
-      Reset validation
-    </VaButton>
-    <VaButton @click="reset">
-      Reset
-    </VaButton>
+    <VaButton @click="reset"> Reset </VaButton>
   </div>
 </template>
 
-<script setup lang="ts">
-  import { reactive } from 'vue';
-  import { useForm } from 'vuestic-ui';
+<script setup>
+import { reactive, ref, watch, watchEffect } from 'vue'
+import { useForm } from 'vuestic-ui'
+import { Country, State, City} from 'country-state-city'
+import family from '@/services/family';
 
-  const { isValid, validate, reset, resetValidation } = useForm('formRef')
+const { isValid, validate, reset} = useForm('formRef')
 
-  const form = reactive({
-    Name: '',
-    country: '',
-    state:"",
-    lg:"",
-    landmark:"",
-    
-  })
+const form = reactive({
+  Name: '',
+  country: '',
+  state: '',
+  city: '',
+  role: '',
+  member: false,
+})
 
-  const countries = [
-    { value: 'ua', text: 'Ukraine' },
-    { value: 'us', text: 'USA' },
-    { value: 'uk', text: 'United Kingdom' },
-  ]
+const roles = ["child", "mother", "father"]
 
-  const submit = () => alert('Form submitted!')
+const countries = Country.getAllCountries().map(country => ({ value: country.isoCode, text: country.name }))
+let states = []
+let cities = []
+
+watch(() => form.country, (newCountry) => {
+  states = State.getStatesOfCountry(newCountry.value).map(state => ({ value: state.isoCode, text: state.name }))
+  form.state = ''
+  form.city = ''
+})
+
+watch(() => form.state, (newState) => {
+  cities = City.getCitiesOfState(form.country.value, newState.value).map(city => ({ value: city.name, text: city.name }))
+  form.city = ''
+})
+
+watchEffect(() => {
+  if(!form.member){
+    form.role = ''
+  }
+})
+
+const submit = () => console.log(form)
 </script>
 
+
+<style scoped>
+.form-group {
+  justify-content: center;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: auto;
+  height: 50%;
+  width: 50%;
+}
+</style>

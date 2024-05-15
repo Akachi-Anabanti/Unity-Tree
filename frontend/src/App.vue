@@ -1,48 +1,61 @@
 <script setup>
+import { onBeforeMount, ref } from 'vue'
+import { useAuthStore } from './stores/auth'
+import { useFamilyStore } from './stores/family';
 
-  import { onBeforeMount, ref } from 'vue';
-  import { useAuthStore } from './stores/auth';
+const authStore = useAuthStore()
+const useFamily = useFamilyStore()
+const isLoading = ref(true)
 
-  const authStore = useAuthStore();
-  const isLoading =ref(true)
+onBeforeMount(async () => {
+  // check if user is logged in
+  await authStore.dispatchCheckLoggedIn()
 
-
-  onBeforeMount(async() => {
-    await authStore.dispatchCheckLoggedIn()
-    isLoading.value = false
-  })
+  // check if user has a family
+  //  this sets the currentUserHasFamily value to either true or false
+  // and it is used to display the tree sidebar item
+  
+  await authStore.dispatchCheckCurrentUserHasFamily()
+  isLoading.value = false
+})
 </script>
 
 <template>
-      <div class="spinner-container" v-if="isLoading">
-        <div class="spinner"></div>
-      </div>
-      <RouterView v-else/>
+  <div class="spinner-container" v-if="isLoading">
+    <div class="spinner"></div>
+  </div>
+  <RouterView v-else />
 </template>
 
 <style scoped>
 .api-status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    animation: blink 1s infinite;
-    position: absolute;
-    bottom: 2%;
-    right: 2%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: blink 1s infinite;
+  position: absolute;
+  bottom: 2%;
+  right: 2%;
 }
 
 .api-status-dot.online {
-    background-color: green;
+  background-color: green;
 }
 
 .api-status-dot.offline {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 @keyframes blink {
-    0% {opacity: 0.2;}
-    50% {opacity: 1;}
-    100% {opacity: 0.2;}
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }
 
 .spinner-container {
@@ -65,7 +78,11 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

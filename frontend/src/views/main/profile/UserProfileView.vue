@@ -1,6 +1,6 @@
 <script setup>
-import UserProfile from '@/components/userComponents/UserProfile.vue'; 
+import UserProfile from '@/components/userComponents/UserProfile.vue'
 </script>
 <template>
-    <UserProfile />
+  <UserProfile />
 </template>

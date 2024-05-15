@@ -1,82 +1,81 @@
 // import { useAlertStore } from '@/stores/alert';
-import { useAuthStore } from '@/stores/auth';
-import { createRouter, createWebHistory} from 'vue-router'
-import accountRoute from './account';
-import HomeView from '@/views/main/HomeView.vue';
-
+import { useAuthStore } from '@/stores/auth'
+import { createRouter, createWebHistory } from 'vue-router'
+import accountRoute from './account'
+import HomeView from '@/views/main/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  linkActiveClass:'active',
+  linkActiveClass: 'active',
   routes: [
     {
       path: '',
       name: 'home',
-      component: ()=> import('@/views/main/MainView.vue'),
-      children:[
+      component: () => import('@/views/main/MainView.vue'),
+      children: [
         {
-          path:"",
-          name:"main",
+          path: '',
+          name: 'main',
           component: HomeView
         },
         {
-          path:"/tree/:familyId",
-          name:"tree",
-          component: () => import("@/views/main/TreeView.vue"),
-          props:true
+          path: '/tree/:familyId',
+          name: 'tree',
+          component: () => import('@/views/main/TreeView.vue'),
+          props: true
         },
         {
-          path: "/family",
-          name: "family",
-          children:[
+          path: '/family',
+          name: 'family',
+          children: [
             {
-              path:"/create",
-              name:"create-family",
-              component: () => import("@/views/main/family/createFamilyView.vue")
+              path: '/create',
+              name: 'create-family',
+              component: () => import('@/views/main/family/createFamilyView.vue')
             },
             {
-              path: "/view/:familyId",
-              name:"view-family",
-              component: ()=> import("@/views/main/family/familyProfileView.vue"),
-              props:true
+              path: '/view/:familyId',
+              name: 'view-family',
+              component: () => import('@/views/main/family/familyProfileView.vue'),
+              props: true
             },
             {
-              path:"/edit/:familyId",
-              name:"edit-family",
-              component: ()=> import("@/views/main/family/editFamilyProfileView.vue"),
-              props:true
+              path: '/edit/:familyId',
+              name: 'edit-family',
+              component: () => import('@/views/main/family/editFamilyProfileView.vue'),
+              props: true
             }
           ]
         },
         {
-          path: "/profile/:userId",
-          name: "profile",
-          redirect: "view",
-          children:[
+          path: '/profile/:userId',
+          name: 'profile',
+          redirect: 'view',
+          children: [
             {
-              path:"/view/:userId",
-              name: "view",
-              component: () =>  import("@/views/main/profile/UserProfileView.vue"),
-              props:true
+              path: '/view/:userId',
+              name: 'view',
+              component: () => import('@/views/main/profile/UserProfileView.vue'),
+              props: true
             },
             {
-              path:"/edit/:userId",
-              name:"edit",
-              component: () => import("@/views/main/profile/UserProfileEditView.vue"),
-              props:true
+              path: '/edit/:userId',
+              name: 'edit',
+              component: () => import('@/views/main/profile/UserProfileEditView.vue'),
+              props: true
             }
           ],
-          props:true
+          props: true
         },
         {
-          path:"/discover",
-          name:"discover",
-          component: ()=> import("@/views/main/ExploreView.vue")
+          path: '/discover',
+          name: 'discover',
+          component: () => import('@/views/main/ExploreView.vue')
         }
       ]
     },
     // Accounts route set up
-    { ...accountRoute},
+    { ...accountRoute },
     {
       path: '/about',
       name: 'about',
@@ -85,25 +84,22 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
     },
-    {path : '/:pathMatch(.*)*', redirect:'/'}
-
+    { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
-});
+})
 
-router.beforeEach(async(to) => {
+router.beforeEach(async (to) => {
   //clear alerts on route change
   // useAlertStore().$reset()
 
-  const publicPages =['/account/login', '/account/register', '/about']
-  const authRequired = !publicPages.includes(to.path);
+  const publicPages = ['/account/login', '/account/register', '/about']
+  const authRequired = !publicPages.includes(to.path)
 
-  const authStore = useAuthStore();
+  const authStore = useAuthStore()
   if (authRequired && !authStore.isAuthenticated) {
-    
-      authStore.setReturnUrl(to.fullPath)
-      return '/account/login';
+    authStore.setReturnUrl(to.fullPath)
+    return '/account/login'
   }
 })
-
 
 export default router

@@ -1,5 +1,3 @@
-import adjustHeight from "./adjustHeight";
+import adjustHeight from './adjustHeight'
 
 export default adjustHeight
-
-

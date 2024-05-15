@@ -1,145 +1,128 @@
-import { API } from "@/services";
-import { defineStore } from "pinia";
-import { useAuthStore } from "../auth";
-import {  computed, reactive} from "vue";
+import { API } from '@/services'
+import { defineStore } from 'pinia'
+import { useAuthStore } from '../auth'
+import { computed, reactive } from 'vue'
 
+export const useUserStore = defineStore('userStore', () => {
+  const authStore = useAuthStore()
 
-export const useUserStore = defineStore('userStore', () =>{
+  let familiesCreated = reactive({ data: null })
 
-    const authStore = useAuthStore()
+  const numberOfFamiliesCreated = computed(() =>
+    familiesCreated.data ? familiesCreated.data.length : 0
+  )
 
+  const isNumberFamiliesCreatedZero = computed(() => numberOfFamiliesCreated.value === 0)
 
-    let familiesCreated = reactive({data:null})
-    
-    const numberOfFamiliesCreated = computed(() => familiesCreated.data? familiesCreated.data.length : 0)
-    
-    const isNumberFamiliesCreatedZero = computed(() => numberOfFamiliesCreated.value === 0)
-    
+  function $reset() {
+    familiesCreated.data = []
+  }
 
-    function $reset(){
-        familiesCreated.data=[]
-    }
+  const getFamily = computed(() => familiesCreated.data)
 
-
-    const getFamily = computed(()=>familiesCreated.data)
-
-    async function dispatchGetUser(){
-        try {
-
-            const {status, data} = await API.users.getUser();
-            if(status == 200){
-                return {
-                    success: true,
-                    content: data
-                }
-            }
-            
-        } catch (error) {
-
-            return {
-                success: false,
-                status: error.response?.status,
-                content: null
-            }
-            
-        }
-
+  async function dispatchGetUser() {
+    try {
+      const { status, data } = await API.users.getUser()
+      if (status == 200) {
         return {
-            success:false,
-            content:null,
-            status:400
+          success: true,
+          content: data
         }
-    }
-
-    // deletes a user from the db and updates the state
-    async function dispatchDeleteUser(id){
-        try {
-
-            const {status} = await API.users.deleteUser(id);
-            if(status == 200){
-                authStore.dispatchLogout()
-                return {
-                    success: true,
-                    content: null
-                }
-            }
-            
-        } catch (error) {
-
-            return {
-                success: false,
-                status: error.response?.status,
-                content: null
-            }
-            
-        }
-
-        return {
-            success:false,
-            content:null,
-            status:400
-        }
-    }
-
-    // updates the user in the database
-    async function dispatchUpdateUser(id, input){
-        try {
-
-            const {status} = await API.users.updateUser(id, input);
-            if(status == 200){
-                // updateUser(id, data);
-                return {
-                    success: true,
-                    content: null
-                }
-            }
-            
-        } catch (error) {
-
-            return {
-                success: false,
-                status: error.response?.status,
-                content: null
-            }
-            
-        }
-
-        return {
-            success:false,
-            content:null,
-            status:400
-        }
-    }
-
-    async function dispatchGetFamiliesCreated(){
-        try {
-            const {status, data} = await API.users.getFamiliesCreated()
-            if (status === 200) {
-                familiesCreated.data= data
-                return {
-                    success:true,
-                    content:null
-                }
-            }
-        } catch (error) {
-            return {
-                success: false,
-                content:null,
-                status: error.response?.status
-            }
-
-        }
-
+      }
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status,
+        content: null
+      }
     }
 
     return {
-        $reset,
-        isNumberFamiliesCreatedZero,
-        numberOfFamiliesCreated,
-        getFamily,
-        dispatchGetUser,
-        dispatchDeleteUser,
-        dispatchUpdateUser,
-        dispatchGetFamiliesCreated
+      success: false,
+      content: null,
+      status: 400
     }
-});
+  }
+
+  // deletes a user from the db and updates the state
+  async function dispatchDeleteUser(id) {
+    try {
+      const { status } = await API.users.deleteUser(id)
+      if (status == 200) {
+        authStore.dispatchLogout()
+        return {
+          success: true,
+          content: null
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status,
+        content: null
+      }
+    }
+
+    return {
+      success: false,
+      content: null,
+      status: 400
+    }
+  }
+
+  // updates the user in the database
+  async function dispatchUpdateUser(id, input) {
+    try {
+      const { status } = await API.users.updateUser(id, input)
+      if (status == 200) {
+        // updateUser(id, data);
+        return {
+          success: true,
+          content: null
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        status: error.response?.status,
+        content: null
+      }
+    }
+
+    return {
+      success: false,
+      content: null,
+      status: 400
+    }
+  }
+
+  async function dispatchGetFamiliesCreated() {
+    try {
+      const { status, data } = await API.users.getFamiliesCreated()
+      if (status === 200) {
+        familiesCreated.data = data
+        return {
+          success: true,
+          content: null
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        content: null,
+        status: error.response?.status
+      }
+    }
+  }
+
+  return {
+    $reset,
+    isNumberFamiliesCreatedZero,
+    numberOfFamiliesCreated,
+    getFamily,
+    dispatchGetUser,
+    dispatchDeleteUser,
+    dispatchUpdateUser,
+    dispatchGetFamiliesCreated
+  }
+})
