@@ -13,6 +13,8 @@ Create, Discover, Visualize, and Share Family Connections
 ## Project Overview
 The backend of the Unity Tree application provides a RESTful API to support the creation, discovery, and visualization of family trees. It is built with Flask and serves as the core of the Unity Tree application, handling all data management and server-side logic.
 
+Authentication is managed using `flask_jwt_extended`, which provides endpoints for login and can handle both cookies and Authorization Header Bearer Tokens.
+
 ## Packages
 This project uses the following packages and their versions:
 
@@ -21,6 +23,8 @@ This project uses the following packages and their versions:
 2. [`flask`](https://flask.palletsprojects.com/en/3.0.x/) `3.0.3`
 3. [`werkzeug`](https://werkzeug.palletsprojects.com/en/3.0.x/) `3.0.3`
 4. [`poetry`](https://python-poetry.org/) `1.6.1`
+5. [`alembic`](https://alembic)
+6. [`SQLAlchemy`](https://sqlalchemy)
 
 ## API Endpoints
 
@@ -83,9 +87,13 @@ This project uses the following packages and their versions:
     ```env
     JWT_SECRET_KEY='Your key'
     JWT_CSRF_IN_COOKIES=True
+    DATABASE_URL="YOUR database url"
     ```
 
-6. To start the backend application, navigate back to the `backend` directory. Choose one of the following methods:
+6. To start the backend application, navigate back to the `backend` directory. 
+    execute
+    - `flask db upgrade` to create the database migrations
+Choose one of the following methods:
 
     **[a] Using Gunicorn**:
     - Execute:
