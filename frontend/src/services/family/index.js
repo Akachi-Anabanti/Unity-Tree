@@ -3,7 +3,7 @@ import http from '../api'
 //get a member family tree
 /**
  *
- * @param {*} _Id 
+ * @param {*} _Id
  * _Id can be family Id or MemberId
  * @returns
  */
@@ -13,6 +13,14 @@ const getFamily = async (_Id) => {
 
 //creates a family
 const createFamily = async (input) => {
+  if (input.member == true) {
+    /**
+     * if the current logged in user is a member
+     * of the family being created then call the user create family endpoint
+     * to create the family of the user
+     */
+    return await http.post('/user/family', input)
+  }
   return await http.post('/family', input)
 }
 

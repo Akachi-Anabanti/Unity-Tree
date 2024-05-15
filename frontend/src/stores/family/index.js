@@ -154,9 +154,9 @@ export const useFamilyStore = defineStore('family', () => {
     }
   }
 
-  async function dispatchCreateFamily() {
+  async function dispatchCreateFamily(payload) {
     try {
-      const { status, data } = await API.family.createFamily()
+      const { status, data } = await API.family.createFamily(payload)
       if (status === 201) {
         createFamily(data)
 

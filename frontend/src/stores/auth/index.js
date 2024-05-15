@@ -154,27 +154,24 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-
-  async function dispatchCheckCurrentUserHasFamily(){
+  async function dispatchCheckCurrentUserHasFamily() {
     try {
-      const {status, data} = await API.family.getFamily(getCurrentUserId.value)
-      if (status == 200){
+      const { status, data } = await API.family.getFamily(getCurrentUserId.value)
+      if (status == 200) {
         currentUserHasFamily.value = true
         return {
-          success:true,
-          content:null
+          success: true,
+          content: null
         }
       }
     } catch (error) {
-      return{
+      return {
         success: false,
         content: null,
         status: error.response?.status
       }
     }
   }
-
-
 
   return {
     $reset,
