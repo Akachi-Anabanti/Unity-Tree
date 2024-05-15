@@ -14,13 +14,16 @@ class Family(BaseModel, db.Model):
         sa.String(125), nullable=True, index=True
     )
     state: so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
+    city: so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
     lga: so.Mapped[str] = so.mapped_column(sa.String(125), nullable=True, index=True)
     community: so.Mapped[str] = so.mapped_column(
         sa.String(125), nullable=True, index=True
     )
 
-    members = so.relationship("FamilyMember", back_populates="family")
-    media = so.relationship("Media", back_populates="family")
+    members = so.relationship(
+        "FamilyMember", back_populates="family", cascade="all,delete"
+    )
+    media = so.relationship("Media", back_populates="family", cascade="all,delete")
 
     creator_id = so.mapped_column(
         sa.String(255), sa.ForeignKey("User.id", name="fk_creator_id"), nullable=False
@@ -51,8 +54,8 @@ class Family(BaseModel, db.Model):
         return None
 
     @classmethod
-    def create_family(cls, name, creator_id):
-        new_family = cls(name=name, creator_id=creator_id)
+    def create_family(cls, creator_id, **kwargs):
+        new_family = cls(creator_id=creator_id, **kwargs)
         return new_family
 
     def update_family(self, **kwargs):

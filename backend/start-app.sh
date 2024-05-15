@@ -11,6 +11,8 @@ NC='\033[0m'
 
 ENV=$FLASK_ENV
 
+# Start the virtual Environment
+
 if [ "$ENV"  == "production" ]; then
 	echo -e "${GREEN}Starting App in Production Mode..${NC}"
 	gunicorn -w4 run:app

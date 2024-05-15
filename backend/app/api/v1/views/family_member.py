@@ -101,8 +101,7 @@ def get_family_owner(family_id):
 @fam_bp.route("/family/", methods=["POST"])
 @jwt_required()
 def make_family():
-    name = request.json.get("name")
-    family = models.Family.create_family(name=name, creator_id=current_user.id)
+    family = models.Family.create_family(creator_id=current_user.id, **request.json)
     db.session.add(family)
     db.session.commit()
     return family.to_dict(), 201

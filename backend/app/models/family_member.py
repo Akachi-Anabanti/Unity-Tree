@@ -20,8 +20,8 @@ class FamilyMember(BaseModel, db.Model):
         sa.String(255), sa.ForeignKey("Member.id"), primary_key=True
     )
     role: so.Mapped[str] = so.mapped_column(sa.String(60))
-    family = so.relationship("Family", back_populates="members")
-    member = so.relationship("Member", back_populates="families")
+    family = so.relationship("Family", back_populates="members", cascade="all,delete")
+    member = so.relationship("Member", back_populates="families", cascade="all,delete")
 
     @classmethod
     def create_family_member(cls, family_id, member_id, role):
