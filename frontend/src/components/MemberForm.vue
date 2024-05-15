@@ -88,6 +88,7 @@ const date_picker_end_date = new Date().getFullYear()
         v-model="form.role"
         :options="roleOptions"
         placeholder="Role"
+        :rules="[(v) => Boolean(v)]"
        /> 
 
 

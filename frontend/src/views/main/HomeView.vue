@@ -28,7 +28,7 @@
         <ShowFamily />
     </div>
     <div v-else>
-        <AddFamily v-bind="showPopover"/>
+        <AddFamily />
     </div>
 </template>
 

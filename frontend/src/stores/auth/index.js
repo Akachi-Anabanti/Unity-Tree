@@ -17,21 +17,20 @@ export const useAuthStore = defineStore('auth', ()=>{
 
     const isLoggedIn = ref(false)
     const token = ref(null)
-    const isAuthenticated = computed(() => isLoggedIn.value);
+    const isAuthenticated = computed(() => isLoggedIn.value === true? true:false);
     const isSuperUser = ref(false)
     const currentUser = ref(null)
     const returnUrl = ref(null)
 
-    const getCurrentUserId = computed(() => currentUser.value.id)
+    const getCurrentUserId = computed(() => currentUser.value? currentUser.value.id: null)
 
 
     // resets the store
     function $reset(){
         isLoggedIn.value = false
-        token.value =null
+        token.value = null
         isSuperUser.value = false
-        currentUser.value = 
-        returnUrl.value = null
+        // currentUser.value = null
     }
 
 
@@ -52,7 +51,6 @@ export const useAuthStore = defineStore('auth', ()=>{
         // resets all the stores
         useUserStore().$reset()
         useFamilyStore().$reset()
-        useAlertStore().$reset()
         $reset()
         
         // redirects to login page
@@ -66,6 +64,8 @@ export const useAuthStore = defineStore('auth', ()=>{
                 if (localToken) {
                     token.value = localToken
                     isLoggedIn.value = true
+                } else {
+                    logout()
                 }
             }
             if (token.value) {

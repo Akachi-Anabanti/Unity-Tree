@@ -1,4 +1,4 @@
-import { useAlertStore } from '@/stores/alert';
+// import { useAlertStore } from '@/stores/alert';
 import { useAuthStore } from '@/stores/auth';
 import { createRouter, createWebHistory} from 'vue-router'
 import accountRoute from './account';
@@ -67,6 +67,11 @@ const router = createRouter({
             }
           ],
           props:true
+        },
+        {
+          path:"/discover",
+          name:"discover",
+          component: ()=> import("@/views/main/ExploreView.vue")
         }
       ]
     },
@@ -87,7 +92,7 @@ const router = createRouter({
 
 router.beforeEach(async(to) => {
   //clear alerts on route change
-  useAlertStore().$reset()
+  // useAlertStore().$reset()
 
   const publicPages =['/account/login', '/account/register', '/about']
   const authRequired = !publicPages.includes(to.path);

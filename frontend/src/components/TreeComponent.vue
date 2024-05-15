@@ -42,6 +42,8 @@
   onMounted(async() => {
       await useFamily.dispatchGetFamilyMembers(props.familyId)
       isLoading.value = false
+
+
       if (!useFamily.isFamilyEmpty && useFamily.numberOfChildren > 0){
         // adjust the height if the family is not empty
         adjustHeight()
@@ -84,6 +86,12 @@
       confirmModalDelete.value = !confirmModalDelete.value
     }
   });
+
+  // watching to adjust the height of th children linker
+  watchEffect(()=>{ 
+    useFamily.numberOfChildren
+    adjustHeight()}
+  )
   
   function getMemberFamily (memberId) {
     router.push("/tree", {familyId:memberId})
@@ -95,8 +103,8 @@
 
 function adjustHeight() {
   if(useFamily.numberOfChildren > 0){
-    nextTick(() => {
-        const cards = container.value.querySelectorAll('.children-card');
+    nextTick(async() => {
+        const cards = await container.value.querySelectorAll('.children-card');
         const lastCard = cards[cards.length -1];
         const rectContainer = container.value.getBoundingClientRect();
         const rectLastCard = lastCard.getBoundingClientRect();

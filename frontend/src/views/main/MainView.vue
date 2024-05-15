@@ -12,7 +12,6 @@
     const logout = async() => {
         authStore.dispatchLogout()
     }
-
 </script>
 
 <template>
@@ -78,7 +77,7 @@
             </RouterLink>
         </VaSidebarItem>
         <VaSidebarItem :active="page === 'tree'" @click="page = 'tree'">
-            <RouterLink :to="{name:'tree', params:{familyId: 'random-id-for-test'}}">
+            <RouterLink :to="{name:'tree', params:{familyId: authStore.getCurrentUserId}}">
                 <VaSidebarItemContent>
                     <VaIcon name="account_tree" />
                     <VaSidebarItemTitle>
@@ -108,12 +107,15 @@
         </VaSidebarItem>
 
         <VaSidebarItem :active="page === 'explore'" @click="page = 'explore'">
+          <RouterLink to="/discover">
             <VaSidebarItemContent>
-            <VaIcon name="explore" />
+                <VaIcon name="explore" />
                 <VaSidebarItemTitle>
                     Discover
                 </VaSidebarItemTitle>
-                </VaSidebarItemContent>
+            </VaSidebarItemContent>
+          </RouterLink>
+
         </VaSidebarItem>
 
         <VaSidebarItem @click="logout" style="bottom: 0;">
@@ -162,7 +164,7 @@
   width: 30%;
   top: 90%;
   align-items: center;
-  animation: swell 2s  infinite ease-in-out;
+  /* animation: swell 2s  infinite ease-in-out; */
 }
 @keyframes swell {
   0%, 100% {

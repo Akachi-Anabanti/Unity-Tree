@@ -17,6 +17,9 @@ const alertStore = useAlertStore()
     <div class="auth-container">
         <div class="auth-container-left">
            <img src="@/assets/connect_teams.svg" width="80%" height="80%" style="margin-top: 40px;"/>
+           <div class="info-text">
+            <h3>Create, Discover and Share Family Connections</h3>
+           </div>
         </div>
         <div class="auth-container-right">
             <div class="main-alert">
@@ -27,8 +30,8 @@ const alertStore = useAlertStore()
                     :show-alert-failure="alertStore.showMainAlertFailure"
                 />
             </div>
-            <div style="height: 30%;">
-                <img src="@/assets/logo.svg" alt="" height="100%" width="100%"/>
+            <div style="height: auto;">
+                <img src="@/assets/unity-name.png" alt="" height="100%" width="100%"/>
             </div>
             <div style="height: 70%; overflow-y:auto;">
                 <RouterView />
@@ -64,4 +67,15 @@ const alertStore = useAlertStore()
 
         }
     }
+
+    .auth-container-left .info-text{
+        width: 70%;
+        margin: auto;
+    }
+    .auth-container-left h3{
+        text-align: center;
+        font-size: x-large;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        align-self: center;
+        }
 </style>

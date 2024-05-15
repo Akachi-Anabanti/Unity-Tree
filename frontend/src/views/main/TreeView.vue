@@ -21,7 +21,7 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router';
 
         if (!useFamily.hasFamily){
             useAlert.dispatchShowMainAlertFailure("This family does not exist consider creating it")
-            router.push('/')
+            router.push("/")
         }
     })
 
@@ -58,7 +58,7 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router';
 
     <!-- Add member button -->
     <div class="flex items-center gap-8 flex-wrap add-member">
-        <VaButton round icon="va-plus" size="large" @click="showModal = true"/>
+        <VaButton round icon="va-plus" size="large" @click="showModal = true" />
     </div>
         <TreeComponent :family-id="props.familyId" />
     </div>
@@ -74,5 +74,17 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router';
 
 .va-modal{
     opacity: 0;
+
 }
+
+.zoom-effect {
+  animation: zoom 2s;
+}
+
+@keyframes zoom {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 </style>

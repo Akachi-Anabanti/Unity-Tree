@@ -5,7 +5,7 @@ import { computed, ref} from 'vue'
 
 export const useFamilyStore =  defineStore('family',() =>{
 
-    let familyMembers = ref({})
+    let familyMembers = ref({father:null,mother:null, children:[]})
     const memberInfo = ref({})
     const familyData = ref({})
     const isFamilyEmpty = ref(true)
