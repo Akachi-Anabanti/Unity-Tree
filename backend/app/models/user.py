@@ -7,7 +7,6 @@ from app import db
 from app.models import BaseModel
 from .mixins import PersonInfoMixin
 
-
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -89,29 +88,13 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
 
         return ancestors
 
-    def get_decendants(self, level):
-        decendants = []
-        nodes = [(self, 0)]
-        while nodes:
-            current_node, current_level = nodes.pop(0)
-            if current_level < level:
-                children = [
-                    family_member.member
-                    for family_member in current_node.families
-                    if family_member.role == "child"
-                ]
-
-                decendants.extend(children)
-                nodes.extend((child, current_level + 1) for child in children)
-        return [decendant.to_dict() for decendant in decendants]
-
     def get_siblings(self):
         siblings = []
         for family_member in self.families:
             if family_member.role == "child":
                 for sibling in family_member.family.members:
                     if sibling.role == "child" and sibling.member_id != self.id:
-                        siblings.append(sibling.member)
+                        siblings.append(sibling.member.to_dict())
         return siblings
 
     def to_dict(self, family_id=None):
@@ -124,3 +107,26 @@ class Member(PersonInfoMixin, BaseModel, db.Model):
             if family_member:
                 data["role"] = family_member.role
         return data
+
+    def get_decendants(self, level, current_level=0):
+        decendants = []
+        if current_level < level:
+            # Get the families where the member's role is either "mother" or "father"
+            parent_families = [
+                fm for fm in self.families if fm.role in ["mother", "father"]
+            ]
+
+            for family_member in parent_families:
+                # Get the children of the member in the current family
+                children = [
+                    fm.member
+                    for fm in family_member.family.members
+                    if fm.role == "child"
+                ]
+
+                for child in children:
+                    decendants.append(child.to_dict())
+                    # Recursively get the descendants of the child
+                    decendants.extend(child.get_decendants(level, current_level + 1))
+
+        return decendants

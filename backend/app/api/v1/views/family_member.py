@@ -48,9 +48,12 @@ def get_siblings(member_id):
 @fam_bp.route("family/member/<string:member_id>/", methods=["GET"])
 @jwt_required()
 def get_family_member(member_id):
-    member = models.FamilyMember.get_family_member(member_id)
+    member = models.Member.query.get(member_id)
     if not member:
-        return not_found("member not found")
+        # tries to retrieve current user
+        member = current_user.member
+        if not member:
+            return not_found("member not found")
     return jsonify(member.to_dict()), 200
 
 
@@ -65,9 +68,7 @@ def get_ancestors(member_id):
 
     if not member:
         return not_found("Member not found")
-
     ancestors = member.get_ancestors(level)
-
     return jsonify(ancestors), 200
 
 
@@ -82,7 +83,6 @@ def get_decendants(member_id):
     if not member:
         return not_found("member does not exist")
     decendants = member.get_decendants(level)
-    print(decendants)
     return jsonify(decendants)
 
 
