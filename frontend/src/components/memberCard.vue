@@ -26,7 +26,7 @@ const handleCardClick = () => {
 }
 
 const handleProfileClick = () => {
-  router.push({ name: 'profile', params: { userId: person.id } })
+  router.push({ name: 'view', params: { _Id: person.id } })
 }
 
 const dateFormat = (date) =>{
@@ -46,6 +46,10 @@ function capitalize(str) {
 
 // Capitalzes the role funtion
 let role = capitalize(person.role)
+
+function goToTree(memberId){
+  router.push({name:"tree", params:{familyId:memberId}})
+}
 
 </script>
 
@@ -70,16 +74,24 @@ let role = capitalize(person.role)
       name="info"
       size="medium"
       color="success"
-      @click=""
+      @click.stop=""
       />
 
-      <VaIcon
+
+    <VaIcon name="account_tree" 
+    size="medium"
+    color="primary"
+    @click.stop="goToTree(person.id)"
+    />
+
+    <VaIcon
       name="edit_square"
       size="medium"
-      color="primary"
-      @click=""
+      color="warning"
+      @click.stop=""
       v-if="authStore.getCurrentUserId === useFamily.getCreatorId || person.id === authStore.getCurrentUserId"
     />
+
     <VaIcon
       name="delete"
       size="medium"

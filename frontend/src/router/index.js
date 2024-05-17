@@ -27,20 +27,21 @@ const router = createRouter({
         {
           path: '/family',
           name: 'family',
+          component:() => import('@/views/main/family/familyViewLayout.vue'),
           children: [
             {
-              path: '/create',
+              path: 'create',
               name: 'create-family',
               component: () => import('@/views/main/family/createFamilyView.vue')
             },
             {
-              path: '/view/:familyId',
+              path: 'view/:familyId',
               name: 'view-family',
               component: () => import('@/views/main/family/familyProfileView.vue'),
               props: true
             },
             {
-              path: '/edit/:familyId',
+              path: 'edit/:familyId',
               name: 'edit-family',
               component: () => import('@/views/main/family/editFamilyProfileView.vue'),
               props: true
@@ -48,24 +49,23 @@ const router = createRouter({
           ]
         },
         {
-          path: '/profile/:userId',
+          path: '/profile',
           name: 'profile',
-          redirect: 'view',
+          component: () => import('@/views/main/profile/ProfileViewLayout.vue'),
           children: [
             {
-              path: '/view/:userId',
+              path: 'view/:_Id',
               name: 'view',
               component: () => import('@/views/main/profile/UserProfileView.vue'),
               props: true
             },
             {
-              path: '/edit/:userId',
+              path: 'edit/:_Id',
               name: 'edit',
               component: () => import('@/views/main/profile/UserProfileEditView.vue'),
               props: true
             }
           ],
-          props: true
         },
         {
           path: '/discover',
@@ -87,6 +87,11 @@ const router = createRouter({
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })
+router.beforeEach((to, from, next) => {
+  // Store the user's last route path
+  localStorage.setItem('lastRoute', to.fullPath);
+  next();
+});
 
 router.beforeEach(async (to) => {
   //clear alerts on route change
@@ -100,6 +105,14 @@ router.beforeEach(async (to) => {
     authStore.setReturnUrl(to.fullPath)
     return '/account/login'
   }
+   // If the user is authenticated and there's a last route in the localStorage,
+  // navigate to it instead
+  // const lastRoute = localStorage.getItem('lastRoute');
+  // if (authStore.isAuthenticated && lastRoute) {
+  //   next(lastRoute);
+  // } else {
+  //   next();
+  // }
 })
 
 export default router

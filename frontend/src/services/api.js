@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { getCookie } from '@/utils'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
@@ -22,6 +24,9 @@ instance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
+      if (error.response.msg === 'Token has expired') {
+        router.push('/account/login')
+        }
       return error.response
     }
 

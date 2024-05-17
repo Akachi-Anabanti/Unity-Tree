@@ -1,18 +1,28 @@
 <script setup>
-import { onMounted } from 'vue'
-onMounted(async () => {})
+import { useFamilyStore } from '@/stores/family';
+
+const useFamily = useFamilyStore();
+
 </script>
 
 <template>
-  <VaCard square>
-    <VaCardContent class="siblings-section">
-      <VaAvatar class="member-avatar"></VaAvatar>
-    </VaCardContent>
-  </VaCard>
+  <div class="siblings-container">
+      <div v-for="sibling in useFamily.getSiblingInfo" class="sibling-card">
+        <div>
+          <RouterLink :to="{ name: 'view', params: { _Id: sibling.id} }">
+            <VaAvatar class="member-avatar"
+              :src="sibling.img? sibling.img: 'https://randomuser.me/api/portraits/men/2.jpg'"
+              size="large"
+              />
+          </RouterLink>
+        </div>
+        <p>{{ sibling.first_name }} {{ sibling.last_name }}</p>
+      </div>
+  </div>
 </template>
 
 <style scope>
-.siblings-section {
+.siblings-container {
   display: flex;
   justify-content: space-evenly;
 }

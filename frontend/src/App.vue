@@ -1,23 +1,17 @@
 <script setup>
-import { onBeforeMount, onBeforeUpdate, ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useAuthStore } from './stores/auth'
-import { useFamilyStore } from './stores/family'
+import { useUserStore } from './stores/user';
 
 const authStore = useAuthStore()
-const useFamily = useFamilyStore()
+// const useFamily = useFamilyStore()
+const userStore = useUserStore()
 const isLoading = ref(true)
 
 onBeforeMount(async () => {
   // check if user is logged in
   await authStore.dispatchCheckLoggedIn()
-
   isLoading.value = false
-})
-onBeforeUpdate(async () => {
-   // check if user has a family
-  //  this sets the currentUserHasFamily value to either true or false
-  // and it is used to display the tree sidebar item
-  await authStore.dispatchCheckCurrentUserHasFamily()
 })
 </script>
 

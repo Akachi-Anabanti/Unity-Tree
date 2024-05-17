@@ -1,7 +1,8 @@
 import { API } from '@/services'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useUserStore } from '../user'
+import { data } from 'autoprefixer'
 
 export const useFamilyStore = defineStore('family', () => {
   const userStore = useUserStore()
@@ -12,6 +13,7 @@ export const useFamilyStore = defineStore('family', () => {
   const familyData = ref({})
   const isFamilyEmpty = ref(true)
   const hasFamily = ref(false)
+  const SiblingInfo = reactive({data:[]})
 
   const numberOfChildren = computed(() =>
     familyMembers.value && familyMembers.value.children ? familyMembers.value.children.length : 0
@@ -19,6 +21,7 @@ export const useFamilyStore = defineStore('family', () => {
   const getFamilyName = computed(() => familyData.value.name)
   const getFamilyId = computed(() => familyData.value.id)
   const getCreatorId = computed(() => familyData.value.creator_id)
+  const  getSiblingInfo = computed(() => SiblingInfo.data.length > 0 ? SiblingInfo.data: [])
 
   // resets the store to empty state
   function $reset() {
@@ -89,7 +92,7 @@ export const useFamilyStore = defineStore('family', () => {
     memberInfo.value = person
   }
 
-  const createFamilyMember = (person) => {
+  const createFamilyMember = async (person) => {
     if (person.role === 'child') {
       familyMembers.value.children.push(person)
     } else {
@@ -367,6 +370,33 @@ export const useFamilyStore = defineStore('family', () => {
     }
   }
 
+  async function dispatchGetSiblings(memberId) {
+    try {
+      const { status, data } = await API.family.getSibilings(memberId)
+      if (status === 200) {
+        // create familyMembers data
+
+        SiblingInfo.data = data
+
+        return {
+          success: true,
+          content: null
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        content: null,
+        status: error.response?.status
+      }
+    }
+    return {
+      success: false,
+      content: null,
+      status: 401
+    }
+  }
+
   async function dispatchDeleteFamilyMembers(familyId) {
     try {
       const { status } = await API.family.deleteFamilyMembers(familyId)
@@ -406,6 +436,7 @@ export const useFamilyStore = defineStore('family', () => {
     dispatchDeleteFamilyMember,
     dispatchGetFamilyMembers,
     dispatchDeleteFamilyMembers,
+    dispatchGetSiblings,
     numberOfChildren,
     isFamilyEmpty,
     familyMembers,
@@ -414,6 +445,7 @@ export const useFamilyStore = defineStore('family', () => {
     getFamilyId,
     memberInfo,
     hasFamily,
-    getCreatorId
+    getCreatorId,
+    getSiblingInfo
   }
 })

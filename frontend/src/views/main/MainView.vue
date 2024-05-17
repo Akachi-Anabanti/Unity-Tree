@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useAlertStore } from '@/stores/alert'
 import AlertComponent from '@/components/AlertComponent.vue'
 import { useUserStore } from '@/stores/user';
-import user from '@/services/user';
 
 const showSidebar = ref(false)
 const page = ref('home')
@@ -15,6 +14,13 @@ const useAlert = useAlertStore()
 const logout = async () => {
   authStore.dispatchLogout()
 }
+
+onBeforeMount(async()=>{
+  // check if user has a family
+  //  this sets the currentUserHasFamily value to either true or false
+  // and it is used to display the tree sidebar item
+  await userStore.dispatchGetUserFamily()
+})
 </script>
 
 <template>
@@ -29,10 +35,14 @@ const logout = async () => {
           />
         </template>
         <template #right>
-          <RouterLink to="/profile">
-            <div style="margin-right: 3rem">
+          <RouterLink
+            :to="{
+              name: 'view',
+              params: { _Id: authStore.getCurrentUserId}
+            }" v-if="authStore.isAuthenticated">
+            <div style="margin-right: 3rem;">
               <VaAvatar
-                src="'https://randomuser.me/api/portraits/men/1.jpg'"
+                src='https://randomuser.me/api/portraits/women/5.jpg'
                 @click="page = 'profile'"
               />
             </div>
@@ -57,7 +67,10 @@ const logout = async () => {
           </RouterLink>
         </VaSidebarItem>
         <VaSidebarItem :active="page === 'profile'" @click="page = 'profile'">
-          <RouterLink to="/profile">
+          <RouterLink :to="{
+              name: 'view',
+              params: { _Id: authStore.getCurrentUserId}
+            }" v-if="authStore.isAuthenticated">
             <VaSidebarItemContent>
               <VaIcon name="person" />
               <VaSidebarItemTitle> Profile </VaSidebarItemTitle>

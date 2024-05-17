@@ -72,6 +72,10 @@ const getDecendants = async (memberId) => {
   return await http.get(`/family/decendants/${memberId}`)
 }
 
+const getSibilings = async (memberId) => {
+  return await http.get(`/family/member/get-siblings/${memberId}`)
+}
+
 export default {
   getFamily,
   createFamily,
@@ -84,5 +88,6 @@ export default {
   getFamilyMembers,
   deleteFamilyMembers,
   getAncestors,
-  getDecendants
+  getDecendants,
+  getSibilings
 }
