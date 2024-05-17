@@ -1,22 +1,33 @@
 import { API } from '@/services'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '../auth'
-import { computed, reactive } from 'vue'
-import family from '@/services/family'
+import { computed, reactive, ref } from 'vue'
 
 export const useUserStore = defineStore('userStore', () => {
+
+  const currentUserHasFamily = ref(false)
   const authStore = useAuthStore()
+  
 
   let familiesCreated = reactive({ data: null })
+  const currentUserFamilyData = ref(null)
+
+
+  // gets the number of families created by the current user
 
   const numberOfFamiliesCreated = computed(() =>
     familiesCreated.data ? familiesCreated.data.length : 0
   )
-
+  // checks if the number of families created by the user is zero
   const isNumberFamiliesCreatedZero = computed(() => numberOfFamiliesCreated.value === 0)
+  const getUserFamilyId = computed(() => currentUserFamilyData? currentUserFamilyData.value.id:null)
 
+
+  // resets the store values to default
   function $reset() {
     familiesCreated.data = []
+    currentUserHasFamily.value = false
+    currentUserFamilyData.value = null
   }
 
   const getFamily = computed(() => familiesCreated.data)
@@ -123,15 +134,38 @@ export const useUserStore = defineStore('userStore', () => {
     }
   }
 
+  async function dispatchGetUserFamily() {
+    try {
+      const { status, data } = await API.users.getUserFamily()
+      if (status === 200) {
+        currentUserHasFamily.value = true
+        currentUserFamilyData.value = data
+        return {
+          success: true,
+          content: null
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        content: null,
+        status: error.response?.status
+      }
+    }
+  }
+
   return {
     $reset,
-    isNumberFamiliesCreatedZero,
-    numberOfFamiliesCreated,
     getFamily,
+    getUserFamilyId,
+    currentUserHasFamily,
+    numberOfFamiliesCreated,
+    isNumberFamiliesCreatedZero,
     deleteFamily,
     dispatchGetUser,
     dispatchDeleteUser,
     dispatchUpdateUser,
+    dispatchGetUserFamily,
     dispatchGetFamiliesCreated
   }
 })
