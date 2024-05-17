@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isSuperUser = ref(false)
   const currentUser = ref(null)
   const returnUrl = ref(null)
-  const currentUserHasFamily = ref(false)
+  
 
   const getCurrentUserId = computed(() => (currentUser.value ? currentUser.value.id : null))
 
@@ -154,24 +154,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function dispatchCheckCurrentUserHasFamily() {
-    try {
-      const { status, data } = await API.family.getFamily(getCurrentUserId.value)
-      if (status == 200) {
-        currentUserHasFamily.value = true
-        return {
-          success: true,
-          content: null
-        }
-      }
-    } catch (error) {
-      return {
-        success: false,
-        content: null,
-        status: error.response?.status
-      }
-    }
-  }
 
   return {
     $reset,
@@ -179,12 +161,10 @@ export const useAuthStore = defineStore('auth', () => {
     isSuperUser,
     currentUser,
     getCurrentUserId,
-    currentUserHasFamily,
     setReturnUrl,
     dispatchLogin,
     dispatchLogout,
     dispatchRegister,
     dispatchCheckLoggedIn,
-    dispatchCheckCurrentUserHasFamily
   }
 })
