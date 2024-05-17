@@ -19,7 +19,7 @@ const getFamiliesCreated = async () => {
   return await http.get('user/family-created/')
 }
 
-const getUserFamily = async() => {
+const getUserFamily = async () => {
   return await http.get('user/family')
 }
 

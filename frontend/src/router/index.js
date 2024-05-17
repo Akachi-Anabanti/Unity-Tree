@@ -27,7 +27,7 @@ const router = createRouter({
         {
           path: '/family',
           name: 'family',
-          component:() => import('@/views/main/family/familyViewLayout.vue'),
+          component: () => import('@/views/main/family/familyViewLayout.vue'),
           children: [
             {
               path: 'create',
@@ -65,7 +65,7 @@ const router = createRouter({
               component: () => import('@/views/main/profile/UserProfileEditView.vue'),
               props: true
             }
-          ],
+          ]
         },
         {
           path: '/discover',
@@ -89,9 +89,9 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   // Store the user's last route path
-  localStorage.setItem('lastRoute', to.fullPath);
-  next();
-});
+  localStorage.setItem('lastRoute', to.fullPath)
+  next()
+})
 
 router.beforeEach(async (to) => {
   //clear alerts on route change
@@ -105,7 +105,7 @@ router.beforeEach(async (to) => {
     authStore.setReturnUrl(to.fullPath)
     return '/account/login'
   }
-   // If the user is authenticated and there's a last route in the localStorage,
+  // If the user is authenticated and there's a last route in the localStorage,
   // navigate to it instead
   // const lastRoute = localStorage.getItem('lastRoute');
   // if (authStore.isAuthenticated && lastRoute) {

@@ -1,7 +1,7 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue'
 import { useAuthStore } from './stores/auth'
-import { useUserStore } from './stores/user';
+import { useUserStore } from './stores/user'
 
 const authStore = useAuthStore()
 // const useFamily = useFamilyStore()

@@ -7,13 +7,12 @@ import { data } from 'autoprefixer'
 export const useFamilyStore = defineStore('family', () => {
   const userStore = useUserStore()
 
-
   let familyMembers = ref({ father: null, mother: null, children: [] })
   const memberInfo = ref({})
   const familyData = ref({})
   const isFamilyEmpty = ref(true)
   const hasFamily = ref(false)
-  const SiblingInfo = reactive({data:[]})
+  const SiblingInfo = reactive({ data: [] })
 
   const numberOfChildren = computed(() =>
     familyMembers.value && familyMembers.value.children ? familyMembers.value.children.length : 0
@@ -21,7 +20,7 @@ export const useFamilyStore = defineStore('family', () => {
   const getFamilyName = computed(() => familyData.value.name)
   const getFamilyId = computed(() => familyData.value.id)
   const getCreatorId = computed(() => familyData.value.creator_id)
-  const  getSiblingInfo = computed(() => SiblingInfo.data.length > 0 ? SiblingInfo.data: [])
+  const getSiblingInfo = computed(() => (SiblingInfo.data.length > 0 ? SiblingInfo.data : []))
 
   // resets the store to empty state
   function $reset() {
@@ -30,6 +29,7 @@ export const useFamilyStore = defineStore('family', () => {
     familyData.value = {}
     hasFamily.value = false
     isFamilyEmpty.value = true
+    SiblingInfo.data = []
   }
 
   // checks if the  family created is empty
@@ -81,8 +81,8 @@ export const useFamilyStore = defineStore('family', () => {
   // deletes the family details
 
   const deleteFamily = (data) => {
-    // This userStore.deleteFamily ensures that the list of families created by user is updated 
-    // to reflect on the DOM 
+    // This userStore.deleteFamily ensures that the list of families created by user is updated
+    // to reflect on the DOM
     userStore.deleteFamily(data)
     familyData.value = {}
   }

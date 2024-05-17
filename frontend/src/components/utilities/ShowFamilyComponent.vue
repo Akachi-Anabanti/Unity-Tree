@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router'
 import { useAlertStore } from '@/stores/alert'
 import { storeToRefs } from 'pinia'
 
-
 const userStore = useUserStore()
 const authStore = useAuthStore()
 const useFamily = useFamilyStore()
@@ -17,18 +16,15 @@ const router = useRouter()
 
 const family = ref(userStore.getFamily)
 
-
 const showConfirmModal = ref(false)
 const modalRemoveFamily = ref({})
 const modalRemoveFamId = ref('')
 const confirmModalDelete = ref(false)
 
-
 const modalButtonOptions = ref({
   color: 'danger',
   hoverMaskColor: '#ffff'
 })
-
 
 const handleModalOk = async (hide) => {
   // set modaldelte value
@@ -63,7 +59,7 @@ watchEffect(async () => {
   }
 })
 
-const navigateToTree = async(familyId) => {
+const navigateToTree = async (familyId) => {
   router.push({ name: 'tree', params: { familyId: familyId } })
 }
 </script>
@@ -94,7 +90,7 @@ const navigateToTree = async(familyId) => {
             v-if="authStore.getCurrentUserId === family.creator_id"
             class="fam-delete-icon"
           />
-        </VaCardActions> 
+        </VaCardActions>
       </VaCard>
     </div>
   </div>
@@ -113,9 +109,9 @@ const navigateToTree = async(familyId) => {
 }
 .fam-card:hover {
   transform: scale(1.05);
-  cursor:pointer;
+  cursor: pointer;
 }
-.fam-delete-icon{
+.fam-delete-icon {
   z-index: 999;
   position: absolute;
 }

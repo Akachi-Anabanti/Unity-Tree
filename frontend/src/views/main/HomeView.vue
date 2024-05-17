@@ -18,7 +18,6 @@ const userStore = useUserStore()
 </script>
 
 <template>
-
   <div v-if="isLoading">
     <Spinner />
   </div>

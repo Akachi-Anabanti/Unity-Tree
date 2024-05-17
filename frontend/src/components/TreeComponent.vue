@@ -123,7 +123,9 @@ function adjustHeight() {
     Remove <em>{{ modalRemovePerson.first_name }}</em> from family?
   </VaModal>
 
-  <h2 style="text-align: center; text-transform: uppercase; border-bottom: 2px solid black;">{{ useFamily.getFamilyName }}</h2>
+  <h2 style="text-align: center; text-transform: uppercase; border-bottom: 2px solid black">
+    {{ useFamily.getFamilyName }}
+  </h2>
 
   <div v-if="isLoading">
     <Spinner />
@@ -163,9 +165,7 @@ function adjustHeight() {
         </draggable>
       </div>
     </div>
-    <div v-else>
-      Add Members to this Family
-    </div>
+    <div v-else>Add Members to this Family</div>
   </div>
 </template>
 

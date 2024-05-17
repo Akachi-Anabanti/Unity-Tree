@@ -11,9 +11,9 @@ const useFamily = useFamilyStore()
 const person = defineProps({
   id: { type: String },
   img: {},
-  first_name: { type: String},
+  first_name: { type: String },
   last_name: {},
-  date_of_birth:{},
+  date_of_birth: {},
   role: { type: String }
 })
 
@@ -29,28 +29,31 @@ const handleProfileClick = () => {
   router.push({ name: 'view', params: { _Id: person.id } })
 }
 
-const dateFormat = (date) =>{
-let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-let formattedDate = date.toLocaleDateString("en-US", options);
-return formattedDate
+const dateFormat = (date) => {
+  let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  let formattedDate = date.toLocaleDateString('en-US', options)
+  return formattedDate
 }
 
 // converts to JS date Object format
-let dob = new Date(person.date_of_birth);
-let formattedDate = dateFormat(dob);
+let dob = new Date(person.date_of_birth)
+let formattedDate = dateFormat(dob)
 
 // Capitalize functon
 function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 // Capitalzes the role funtion
 let role = capitalize(person.role)
 
-function goToTree(memberId){
-  router.push({name:"tree", params:{familyId:memberId}})
+function goToTree(memberId) {
+  router.replace({ name: 'tree', params: { familyId: memberId } })
 }
 
+function goToProfileEdit(memberId) {
+  router.push({ name: 'edit', params: { _Id: memberId } })
+}
 </script>
 
 <template>
@@ -62,46 +65,37 @@ function goToTree(memberId){
         @click.stop="handleProfileClick"
       />
     </div>
-    <VaCardTitle class="">
-      {{ person.first_name }} {{ person.last_name }}
-    </VaCardTitle>
-      <VaCardContent>
-        <div><em>{{ role  }}</em></div>
-        <div class="mb-4"><strong>Born: </strong>{{ formattedDate }}</div>
+    <VaCardTitle class=""> {{ person.first_name }} {{ person.last_name }} </VaCardTitle>
+    <VaCardContent>
+      <div>
+        <em>{{ role }}</em>
+      </div>
+      <div class="mb-4"><strong>Born: </strong>{{ formattedDate }}</div>
     </VaCardContent>
-    <VaCardActions align="between" style="margin-top: 10px;">
-      <VaIcon 
-      name="info"
-      size="medium"
-      color="success"
-      @click.stop=""
+    <VaCardActions align="between" style="margin-top: 10px">
+      <VaIcon name="info" size="medium" color="success" @click.stop="" />
+
+      <VaIcon name="account_tree" size="medium" color="primary" @click.stop="goToTree(person.id)" />
+
+      <VaIcon
+        name="edit_square"
+        size="medium"
+        color="warning"
+        @click.stop="goToProfileEdit(person.id)"
+        v-if="
+          authStore.getCurrentUserId === useFamily.getCreatorId ||
+          person.id === authStore.getCurrentUserId
+        "
       />
 
-
-    <VaIcon name="account_tree" 
-    size="medium"
-    color="primary"
-    @click.stop="goToTree(person.id)"
-    />
-
-    <VaIcon
-      name="edit_square"
-      size="medium"
-      color="warning"
-      @click.stop=""
-      v-if="authStore.getCurrentUserId === useFamily.getCreatorId || person.id === authStore.getCurrentUserId"
-    />
-
-    <VaIcon
-      name="delete"
-      size="medium"
-      @click.stop="handleRemove"
-      color="danger"
-      v-if="authStore.getCurrentUserId === useFamily.getCreatorId"
-    />
-    
+      <VaIcon
+        name="delete"
+        size="medium"
+        @click.stop="handleRemove"
+        color="danger"
+        v-if="authStore.getCurrentUserId === useFamily.getCreatorId"
+      />
     </VaCardActions>
- 
   </VaCard>
 </template>
 

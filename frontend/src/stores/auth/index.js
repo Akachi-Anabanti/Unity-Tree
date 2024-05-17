@@ -19,7 +19,6 @@ export const useAuthStore = defineStore('auth', () => {
   const isSuperUser = ref(false)
   const currentUser = ref(null)
   const returnUrl = ref(null)
-  
 
   const getCurrentUserId = computed(() => (currentUser.value ? currentUser.value.id : null))
 
@@ -91,11 +90,11 @@ export const useAuthStore = defineStore('auth', () => {
           isLoggedIn.value = true
           router.push(returnUrl.value || '/')
 
-          alertStore.dispatchShowMainAlertSuccess(data.message)
+          alertStore.dispatchShowMainAlertSuccess(data.msg)
         }
       } else {
         dispatchLogout()
-        alertStore.dispatchShowMainAlertFailure(data.message)
+        alertStore.dispatchShowMainAlertFailure(data.msg)
       }
     } catch (error) {
       return {
@@ -113,11 +112,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function dispatchLogout() {
     try {
-      const { message } = await API.auth.logout()
+      const { msg } = await API.auth.logout()
       logout()
       return {
         success: true,
-        content: message
+        content: msg
       }
     } catch (error) {
       return {
@@ -154,7 +153,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-
   return {
     $reset,
     isAuthenticated,
@@ -165,6 +163,6 @@ export const useAuthStore = defineStore('auth', () => {
     dispatchLogin,
     dispatchLogout,
     dispatchRegister,
-    dispatchCheckLoggedIn,
+    dispatchCheckLoggedIn
   }
 })

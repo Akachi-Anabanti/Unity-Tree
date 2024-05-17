@@ -42,7 +42,7 @@ if (authStore.isAuthenticated) {
 <style scoped>
 .auth-container {
   display: grid;
-  grid-template-columns: 3fr 2.5fr;
+  grid-template-columns: 3fr 3fr;
   gap: 0;
   position: relative;
   height: 100vh;

@@ -1,35 +1,34 @@
 <script setup>
-import { onMounted, watch, ref } from 'vue';
+import { onMounted, watch, ref } from 'vue'
 import marqueeComponent from './marqueeComponent.vue'
 import siblingsComponent from './siblingsComponent.vue'
 import { useFamilyStore } from '@/stores/family'
-import SpinnerComp from '../utilities/spinnerComp.vue';
-import { storeToRefs } from 'pinia';
+import SpinnerComp from '../utilities/spinnerComp.vue'
+import { storeToRefs } from 'pinia'
 
 const isLoading = ref(true)
 
-
 const props = defineProps({
-  _Id:{type:String}
+  _Id: { type: String }
 })
 
 const useFamily = useFamilyStore()
 
-
-onMounted(async () =>{
+onMounted(async () => {
   await useFamily.dispatchGetFamilyMember(props._Id)
   await useFamily.dispatchGetSiblings(props._Id)
   isLoading.value = false
 })
 
-
-watch(() => props._Id, async (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    await useFamily.dispatchGetFamilyMember(newVal)
-    await useFamily.dispatchGetSiblings(newVal)
+watch(
+  () => props._Id,
+  async (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      await useFamily.dispatchGetFamilyMember(newVal)
+      await useFamily.dispatchGetSiblings(newVal)
+    }
   }
-})
-
+)
 
 const userInfo = storeToRefs(useFamily.memberInfo)
 
@@ -42,19 +41,18 @@ const avatarSizeConfig = {
 
 // static user info
 
-
 function calculateAge(dateOfBirth) {
-  let today = new Date();
-  let birthDate = new Date(dateOfBirth);
-  let age = today.getFullYear() - birthDate.getFullYear();
-  let monthDifference = today.getMonth() - birthDate.getMonth();
-  
+  let today = new Date()
+  let birthDate = new Date(dateOfBirth)
+  let age = today.getFullYear() - birthDate.getFullYear()
+  let monthDifference = today.getMonth() - birthDate.getMonth()
+
   // Adjust age if birth date has not occurred yet this year
   if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
+    age--
   }
-  
-  return age;
+
+  return age
 }
 </script>
 <template>
@@ -62,44 +60,52 @@ function calculateAge(dateOfBirth) {
     <SpinnerComp />
   </div>
 
-<div v-else>
-  <div class="header-section">
-    <VaAvatar size="large" :sizes-config="avatarSizeConfig"
-      :src="useFamily.memberInfo.img? useFamily.memberInfo.img: 'https://randomuser.me/api/portraits/women/4.jpg'"/>
+  <div v-else>
+    <div class="header-section">
+      <VaAvatar
+        size="large"
+        :sizes-config="avatarSizeConfig"
+        :src="
+          useFamily.memberInfo.img
+            ? useFamily.memberInfo.img
+            : 'https://randomuser.me/api/portraits/women/4.jpg'
+        "
+      />
 
-    <div class="right-header">
-      <h2 v-if="useFamily.memberInfo.first_name">{{ useFamily.memberInfo.first_name }} {{ useFamily.memberInfo.last_name }}</h2>
-      <h2 v-else>No name</h2>
-      <p>Born: {{ useFamily.memberInfo.date_of_birth }}</p>
-      <p>Age: {{ calculateAge(useFamily.memberInfo.date_of_birth) }}</p>
+      <div class="right-header">
+        <h2 v-if="useFamily.memberInfo.first_name">
+          {{ useFamily.memberInfo.first_name }} {{ useFamily.memberInfo.last_name }}
+        </h2>
+        <h2 v-else>No name</h2>
+        <p>Born: {{ useFamily.memberInfo.date_of_birth }}</p>
+        <p>Age: {{ calculateAge(useFamily.memberInfo.date_of_birth) }}</p>
+      </div>
+    </div>
+
+    <div class="gallery-section">
+      <h3>Memories</h3>
+      <marqueeComponent />
+    </div>
+    <div class="siblings">
+      <h3>Siblings</h3>
+      <siblingsComponent :member-id="props._Id" />
+    </div>
+    <div class="info-section">
+      <p>nickname: {{ useFamily.memberInfo.nickname }}</p>
+      <p>ethnicity: {{ useFamily.memberInfo.ethnicity }}</p>
+      <p>gender: {{ useFamily.memberInfo.gender }}</p>
+      <p>genotype: {{ useFamily.memberInfo.genotype }}</p>
+      <p>height: {{ useFamily.memberInfo.height }}</p>
+      <p>hobbies: {{ useFamily.memberInfo.hobbies }}</p>
+      <p>nationality: {{ useFamily.memberInfo.nationality }}</p>
+      <p>occupation: {{ useFamily.memberInfo.occupation }}</p>
+      <p>ethnicity: {{ useFamily.memberInfo.ethnicity }}</p>
+      <p>Skin Color: {{ useFamily.memberInfo.skin_color }}</p>
+      <p>State of Origin: {{ useFamily.memberInfo.state_of_origin }}</p>
+      <p>Race: {{ useFamily.memberInfo.race }}</p>
+      <p>Marital Status: {{ useFamily.memberInfo.marital_status }}</p>
     </div>
   </div>
-
-  <div class="gallery-section">
-    <h3>Memories</h3>
-    <marqueeComponent />
-  </div>
-  <div class="siblings">
-    <h3>Siblings</h3>
-    <siblingsComponent :member-id="props._Id"/>
-  </div>
-  <div class="info-section">
-    <p>nickname: {{ useFamily.memberInfo.nickname  }}</p>
-    <p>ethnicity: {{ useFamily.memberInfo.ethnicity  }}</p>
-    <p>gender: {{ useFamily.memberInfo.gender  }}</p>
-    <p>genotype: {{ useFamily.memberInfo.genotype  }}</p>
-    <p>height: {{ useFamily.memberInfo.height  }}</p>
-    <p>hobbies: {{ useFamily.memberInfo.hobbies  }}</p>
-    <p>nationality: {{ useFamily.memberInfo.nationality  }}</p>
-    <p>occupation: {{ useFamily.memberInfo.occupation  }}</p>
-    <p>ethnicity: {{ useFamily.memberInfo.ethnicity  }}</p>
-    <p>Skin Color: {{ useFamily.memberInfo.skin_color  }}</p>
-    <p>State of Origin: {{ useFamily.memberInfo.state_of_origin  }}</p>
-    <p>Race: {{ useFamily.memberInfo.race  }}</p>
-    <p>Marital Status: {{ useFamily.memberInfo.marital_status  }}</p>
-
-  </div>
-</div>
 </template>
 
 <style scoped lang="scss">

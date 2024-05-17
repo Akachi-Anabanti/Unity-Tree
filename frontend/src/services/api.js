@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getCookie } from '@/utils'
 import { useRouter } from 'vue-router'
+import { useAlertStore } from '@/stores/alert'
 const router = useRouter()
 
 const instance = axios.create({
@@ -24,9 +25,9 @@ instance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      if (error.response.msg === 'Token has expired') {
-        router.push('/account/login')
-        }
+      const useAlert = useAlertStore()
+      useAlert.dispatchShowMainAlertFailure(error.response.data.msg)
+      router.push('/account/login')
       return error.response
     }
 

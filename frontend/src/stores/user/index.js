@@ -4,14 +4,11 @@ import { useAuthStore } from '../auth'
 import { computed, reactive, ref } from 'vue'
 
 export const useUserStore = defineStore('userStore', () => {
-
   const currentUserHasFamily = ref(false)
   const authStore = useAuthStore()
-  
 
   let familiesCreated = reactive({ data: null })
   const currentUserFamilyData = ref(null)
-
 
   // gets the number of families created by the current user
 
@@ -20,8 +17,9 @@ export const useUserStore = defineStore('userStore', () => {
   )
   // checks if the number of families created by the user is zero
   const isNumberFamiliesCreatedZero = computed(() => numberOfFamiliesCreated.value === 0)
-  const getUserFamilyId = computed(() => currentUserFamilyData? currentUserFamilyData.value.id:null)
-
+  const getUserFamilyId = computed(() =>
+    currentUserFamilyData ? currentUserFamilyData.value.id : null
+  )
 
   // resets the store values to default
   function $reset() {
@@ -32,7 +30,7 @@ export const useUserStore = defineStore('userStore', () => {
 
   const getFamily = computed(() => familiesCreated.data)
 
-  const deleteFamily = (family) =>{
+  const deleteFamily = (family) => {
     const index = familiesCreated.data.findIndex((fm) => fm.id === family.id)
     if (index !== -1) {
       familiesCreated.data.splice(index, 1)
