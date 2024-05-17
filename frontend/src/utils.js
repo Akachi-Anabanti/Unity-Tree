@@ -13,5 +13,7 @@ export const saveLocalToken = (token) => {
 }
 
 export const removeLocalToken = () => {
-  localStorage.removeItem('token')
+  if (getLocalToken) {
+    localStorage.removeItem('token')
+  }
 }
