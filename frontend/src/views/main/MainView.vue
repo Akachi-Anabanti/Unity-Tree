@@ -3,10 +3,13 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useAlertStore } from '@/stores/alert'
 import AlertComponent from '@/components/AlertComponent.vue'
+import { useUserStore } from '@/stores/user';
+import user from '@/services/user';
 
 const showSidebar = ref(false)
 const page = ref('home')
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const useAlert = useAlertStore()
 
 const logout = async () => {
@@ -64,12 +67,12 @@ const logout = async () => {
         <VaSidebarItem
           :active="page === 'tree'"
           @click="page = 'tree'"
-          v-if="authStore.currentUserHasFamily"
+          v-if="userStore.currentUserHasFamily"
         >
           <RouterLink
             :to="{
               name: 'tree',
-              params: { familyId: authStore.getCurrentUserId }
+              params: { familyId: userStore.getUserFamilyId }
             }"
           >
             <VaSidebarItemContent>
