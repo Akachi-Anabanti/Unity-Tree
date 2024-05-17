@@ -64,7 +64,7 @@ const logout = async () => {
         <VaSidebarItem
           :active="page === 'tree'"
           @click="page = 'tree'"
-          v-if="authStore.currentUserHasFamily.value"
+          v-if="authStore.currentUserHasFamily"
         >
           <RouterLink
             :to="{
