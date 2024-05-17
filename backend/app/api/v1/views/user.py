@@ -26,6 +26,17 @@ def get_families_created():
     return current_user.get_families_created()
 
 
+@bp.route("user/family/")
+@jwt_required()
+def get_user_family():
+    member = current_user.member
+    if member:
+        family = FamilyMember.get_family_by_member_id(member.id)
+        if family:
+            return family.to_dict()
+    return not_found("You don't have a family yet!")
+
+
 @bp.route("user/<string:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user(user_id):
