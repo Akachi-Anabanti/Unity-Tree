@@ -50,10 +50,15 @@ def get_siblings(member_id):
 def get_family_member(member_id):
     member = models.Member.query.get(member_id)
     if not member:
-        # tries to retrieve current user
+        # tries to retrieve current user as member
         member = current_user.member
         if not member:
-            return not_found("member not found")
+            if member_id == current_user.id:
+                # current user as current user similar to get current user
+                # this should be seperated into the user line
+                member = current_user
+            else:
+                return not_found("member not found")
     return jsonify(member.to_dict()), 200
 
 

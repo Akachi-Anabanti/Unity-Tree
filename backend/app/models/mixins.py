@@ -11,11 +11,11 @@ class PersonInfoMixin:
 
     @so.declared_attr
     def first_name(cls):
-        return so.mapped_column(sa.String(120), nullable=True)
+        return so.mapped_column(sa.String(120), nullable=False)
 
     @so.declared_attr
     def last_name(cls):
-        return so.mapped_column(sa.String(120), nullable=True)
+        return so.mapped_column(sa.String(120), nullable=False)
 
     @so.declared_attr
     def date_of_birth(cls):

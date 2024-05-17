@@ -13,7 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class User(PersonInfoMixin, BaseModel, db.Model):
     __tablename__ = "User"
     username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True)
-    email: so.Mapped[str] = so.mapped_column(sa.String(120))
+    email: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True)
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(256))
     member = so.relationship(
         "Member", uselist=False, back_populates="user", viewonly=True
@@ -22,12 +22,14 @@ class User(PersonInfoMixin, BaseModel, db.Model):
     families_created = so.relationship("Family", back_populates="creator", lazy=True)
 
     @classmethod
-    def create_user(cls, username, email, password):
+    def create_user(cls, username, email, first_name, last_name, password):
 
         new_user = cls.query.filter_by(email=email).one_or_none()
         if new_user:
             return None
-        new_user = cls(username=username, email=email)
+        new_user = cls(
+            username=username, email=email, first_name=first_name, last_name=last_name
+        )
         new_user.set_password(password)
         return new_user
 

@@ -10,7 +10,7 @@ from app import db
 @bp.route("ping")
 @jwt_required(optional=True)
 def ping():
-    return jsonify({"message": "Pong"}), 200
+    return jsonify({"msg": "Pong"}), 200
 
 
 @bp.route("user/")
@@ -46,7 +46,7 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit(), 204
 
-    return jsonify({"message": "successfully deleted"})
+    return jsonify({"msg": "successfully deleted"})
 
 
 @bp.route("user/<string:user_id>/", methods=["PUT"])

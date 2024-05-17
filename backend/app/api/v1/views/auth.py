@@ -67,7 +67,7 @@ def is_email_valid(email, **kwargs):
 
 @api_v1_bp.route("/login", methods=["POST"])
 def login():
-    response = jsonify({"message": "login successful"})
+    response = jsonify({"msg": "login successful"})
 
     payload = request.json
 
@@ -87,7 +87,7 @@ def login():
 @api_v1_bp.route("/logout", methods=["POST"])
 @jwt_required()
 def logout():
-    response = jsonify({"message": "logout successful"})
+    response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
 
@@ -96,6 +96,8 @@ def logout():
 def register():
     """registers the user"""
 
+    first_name = request.json.get("first_name")
+    last_name = request.json.get("last_name")
     username = request.json.get("username")
     email = request.json.get("email")
     password = request.json.get("password")
@@ -104,15 +106,19 @@ def register():
         return Unauthorized("email is not valid, please use a valid email address")
 
     new_user = models.User().create_user(
-        username=username, email=email, password=password
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=password,
     )
     if new_user is None:
-        response = jsonify({"message": "User already exists"})
+        response = jsonify({"msg": "User already exists"})
         return response, 204
 
     db.session.add(new_user)
     db.session.commit()
-    response = jsonify({"message": "Registeration successfuly"})
+    response = jsonify({"msg": "Registeration successfuly"})
     return response, 201
 
 
@@ -135,14 +141,14 @@ def register_member(member_id):
     )
 
     if new_user is None:
-        response = jsonify({"message": "User already exists"})
+        response = jsonify({"msg": "User already exists"})
         return response, 204
 
     member.user = new_user
     member.registered = True
     db.session.commit()
 
-    return jsonify({"message": "Member registered successfully!"})
+    return jsonify({"msg": "Member registered successfully!"})
 
 
 @api_v1_bp.route("/status/")
