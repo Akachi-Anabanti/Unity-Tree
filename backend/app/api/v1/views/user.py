@@ -68,46 +68,45 @@ def user_update(user_id):
 def create_my_family():
     """Creates a family for the user"""
     role = request.json.get("role")
-
     member = Member.query.filter_by(user_id=current_user.id).one_or_none()
-    # if the member exist and the role is not in any of the families
-    # the member currently belongs to
-    # then you can create the family having that role
-    if member and role not in [family.role for family in member.families]:
-        new_family = Family.create_family(creator_id=current_user.id, **request.json)
-        # A member is supposed to have the last name of the family created, however if the member exist
-        # it carries the last name from the previous family to the new family
-        fam_member = FamilyMember.create_family_member(new_family.id, member.id, role)
-        db.session.add_all([new_family, fam_member])
-        db.session.commit()
+
+    if member:
+        return handle_existing_member(member, role)
+    else:
+        return handle_new_member(role)
+
+
+def handle_existing_member(member, role):
+    if role not in [family.role for family in member.families]:
+        new_family = create_family(member, role)
         return new_family.to_dict(), 201
+    else:
+        return bad_request(f"You are already a {role} in a family!")
 
-    if not member:
-        # create a new member instance
-        new_member = Member(
-            first_name=current_user.first_name,
-            last_name=current_user.last_name,
-            date_of_birth=current_user.date_of_birth,
-        )
-        # set the new member to the user id
-        new_member.user_id = current_user.id
-        # set the registered to true
-        new_member.registered = True
 
-        db.session.add(new_member)
+def handle_new_member(role):
+    new_member = create_member()
+    new_family = create_family(new_member, role)
+    return new_family.to_dict(), 201
 
-        # create a new family instance
-        new_family = Family.create_family(current_user.id, **request.json)
 
-        db.session.add(new_family)
+def create_member():
+    new_member = Member(
+        first_name=current_user.first_name,
+        last_name=current_user.last_name,
+        date_of_birth=current_user.date_of_birth,
+    )
+    new_member.user_id = current_user.id
+    new_member.registered = True
+    db.session.add(new_member)
+    return new_member
 
-        fam_member = FamilyMember().create_family_member(
-            new_family.id, new_member.id, role=role
-        )
 
-        db.session.add(fam_member)
-
-        db.session.commit()
-        return new_family.to_dict(), 201
-
-    return bad_request(f"You are already a {role} in a family!")
+def create_family(member, role):
+    new_family = Family.create_family(current_user.id, **request.json)
+    fam_member = FamilyMember().create_family_member(
+        new_family.id, member.id, role=role
+    )
+    db.session.add_all([new_family, fam_member])
+    db.session.commit()
+    return new_family

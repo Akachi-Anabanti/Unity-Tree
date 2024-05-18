@@ -74,6 +74,8 @@ def login():
     email = payload.get("email")
     password = payload.get("password")
 
+    email = email.lower()
+
     user = models.User.query.filter_by(email=email).one_or_none()
 
     if not user or not user.validate_password(password) or not is_email_valid(email):
@@ -101,6 +103,8 @@ def register():
     username = request.json.get("username")
     email = request.json.get("email")
     password = request.json.get("password")
+
+    email = email.lower()
 
     if not is_email_valid(email, check_deliverability=True):
         return Unauthorized("email is not valid, please use a valid email address")
