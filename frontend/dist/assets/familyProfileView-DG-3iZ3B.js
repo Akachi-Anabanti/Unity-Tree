@@ -1,0 +1,1 @@
+import{d as a,B as r,t as i}from"./index-Cma29Q-e.js";const s={__name:"familyProfileView",props:{familyId:{type:String}},setup(e){const t=e;return(l,o)=>(a(),r("div",null," Family Profile Page "+i(t.familyId),1))}};export{s as default};
