@@ -19,6 +19,7 @@ flask-sse = "^1.0.0"
 redis = "^5.0.4"
 requests = "^2.31.0"
 gunicorn = "^22.0.0"
+elasticsearch = "^8.13.1"
 
 
 [build-system]
