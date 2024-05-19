@@ -32,7 +32,7 @@ if (authStore.isAuthenticated) {
       <div style="height: auto">
         <img src="@/assets/unity-name.png" alt="" height="100%" width="100%" />
       </div>
-      <div style="height: 70%; overflow-y: auto">
+      <div>
         <RouterView />
       </div>
     </div>
@@ -50,6 +50,7 @@ if (authStore.isAuthenticated) {
 .auth-container-right {
   padding: 1rem;
   position: relative;
+  overflow: auto;
 }
 .auth-container-left {
   background-attachment: fixed;

@@ -36,9 +36,9 @@ function isValidPassword(password) {
 </script>
 
 <template>
-  <div>
-    <VaForm ref="myForm" class="form-grp">
-      <div class="col-1">
+  <VaForm ref="myForm" class="form-grp">
+    <div class="row-1">
+      <div>
         <VaInput
           v-model="registerForm.first_name"
           type="text"
@@ -49,6 +49,9 @@ function isValidPassword(password) {
             (v) => v.length >= 3 || 'minimum of 3 characters'
           ]"
         />
+      </div>
+
+      <div class="form-input">
         <VaInput
           v-model="registerForm.last_name"
           type="text"
@@ -60,7 +63,10 @@ function isValidPassword(password) {
           ]"
         />
       </div>
-      <div class="col-2">
+    </div>
+
+    <div class="row-2">
+      <div class="form-input">
         <VaInput
           v-model="registerForm.username"
           type="text"
@@ -71,6 +77,8 @@ function isValidPassword(password) {
             (v) => v.length >= 3 || 'minimum of 3 characters'
           ]"
         />
+      </div>
+      <div class="form-input">
         <VaInput
           for="email"
           v-model="registerForm.email"
@@ -83,8 +91,10 @@ function isValidPassword(password) {
           ]"
         />
       </div>
+    </div>
 
-      <div class="col-3">
+    <div class="row-3">
+      <div class="form-input">
         <!-- Password 1 -->
         <VaValue v-slot="isPasswordVisible" :default-value="false">
           <VaInput
@@ -111,36 +121,37 @@ function isValidPassword(password) {
             </template>
           </VaInput>
         </VaValue>
-        <!-- Password 2 -->
-        <VaValue v-slot="isPasswordVisible" :default-value="false">
-          <VaInput
-            v-model="registerForm.password2"
-            :type="isPasswordVisible.value ? 'text' : 'password'"
-            label="Password 2"
-            placeholder="re-type password"
-            @click-append-inner="isPasswordVisible.value = !isPasswordVisible.value"
-            :rules="[(v) => v === registerForm.password || 'Passwords must match']"
-          >
-            <template #appendInner>
-              <VaIcon
-                :name="isPasswordVisible.value ? 'visibility_off' : 'visibility'"
-                size="small"
-                color="primary"
-              />
-            </template>
-          </VaInput>
-        </VaValue>
       </div>
-
+      <div class="form-input">
+        <!-- Password 2 -->
+      <VaValue v-slot="isPasswordVisible" :default-value="false">
+        <VaInput
+          v-model="registerForm.password2"
+          :type="isPasswordVisible.value ? 'text' : 'password'"
+          label="Password 2"
+          placeholder="re-type password"
+          @click-append-inner="isPasswordVisible.value = !isPasswordVisible.value"
+          :rules="[(v) => v === registerForm.password || 'Passwords must match']"
+        >
+          <template #appendInner>
+            <VaIcon
+              :name="isPasswordVisible.value ? 'visibility_off' : 'visibility'"
+              size="small"
+              color="primary"
+            />
+          </template>
+        </VaInput>
+      </VaValue>
+      </div>
+    </div>
       <VaButton
-        :disabled="!isValid"
-        @click="validate() && submit()"
-        color="success"
-        class="submit-btn"
-        >Register
-      </VaButton>
-    </VaForm>
-  </div>
+      :disabled="!isValid"
+      @click="validate() && submit()"
+      color="success"
+      class="submit-btn"
+      >Register
+    </VaButton>
+  </VaForm>
   <div class="alt-auth">
     <p>Already have an account?</p>
     <VaButton>
@@ -148,29 +159,33 @@ function isValidPassword(password) {
     </VaButton>
   </div>
 </template>
+
+
 <style scoped>
 .form-grp {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: repeat(3, auto); /* Adjusts the row height based on content */
   gap: 20px;
-  width: fit-content;
-  margin: auto;
 }
 
-.col-1,
-.col-2,
-.col-3 {
-  display: contents;
+.row-1,
+.row-2,
+.row-3 {
+  display: grid; /* Use grid instead of contents */
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: auto; /* Adjusts the row height based on content */
+  gap: 10px; /* Add gap between rows */
 }
 
-.submit-btn {
-  grid-column: span 2;
-  margin-top: 20px;
+/* Add a class for error messages */
+.error-message {
+  grid-column: span 2; /* Makes the error message span both columns */
+  color: red; /* Example color */
 }
 
 .alt-auth {
   justify-content: space-evenly;
   grid-column: span 2;
 }
+
 </style>

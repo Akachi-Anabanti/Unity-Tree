@@ -116,7 +116,7 @@ onBeforeMount(async () => {
         </VaSidebarItem>
 
         <VaSidebarItem :active="page === 'explore'" @click="page = 'explore'">
-          <RouterLink to="/discover">
+          <RouterLink to="/discover" >
             <VaSidebarItemContent>
               <VaIcon name="explore" />
               <VaSidebarItemTitle> Discover </VaSidebarItemTitle>
