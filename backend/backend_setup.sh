@@ -20,6 +20,10 @@ poetry lock --no-update
 # Install dependencies
 poetry install
 
+# Execute the DB upgrade
+# creates the tables in the database
+poetry run flask db upgrade
+
 # Create a socket file unity-tree.sock that will enable nginx to communicate with gunicorn
 sudo python3.8 -c 'import socket as s, os; sock = s.socket(s.AF_UNIX); sock.bind(os.path.join(os.getcwd(), "unity-tree.sock"))'
 
