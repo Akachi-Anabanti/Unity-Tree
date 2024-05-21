@@ -10,11 +10,12 @@ key_file="$1"
 base_dir=$(dirname "$0")
 
 log() {
-    echo "$(date +"%Y-%m-%d %H:%M:%S") - $1"
+    #echo "$(date +"%Y-%m-%d %H:%M:%S") - $1"
+    echo "$1"
 }
 
 do_pack() {
-    log "Packing the npm build..."
+    #log "Packing the npm build..."
     # Get the current date and time in the format YYYYMMDDHHMMSS
     current_date=$(date +"%Y%m%d%H%M%S")
     # If the versions/ directory does not exist, create it
@@ -25,13 +26,13 @@ do_pack() {
     # Define the name of the archive file
     file_name="${versions_dir}/npm_build_${current_date}.tgz"
     # Create a .tgz archive of the npm build
-    tar -cvzf "${file_name}" -C "${base_dir}/frontend/dist" .
+    tar -cvzf "${file_name}" -C "${base_dir}/frontend/dist" . > /dev/null 2>&1
     if [ $? -ne 0 ]; then
         log "Failed to pack the npm build."
         return 1
     fi
     if [ -f "${file_name}" ]; then
-        log "Packed npm build into ${file_name}"
+        #log "Packed npm build into ${file_name}"
         # Return the name of the archive file
         echo "${file_name}"
     else
@@ -64,35 +65,35 @@ do_deploy() {
     fi
 
     # Create a new directory for the archive in the releases directory
-    ssh -i "${key_file}" "${host}" "mkdir -p ${path}${no_ext}/"
+    ssh -i "${key_file}" "${host}" "sudo mkdir -p ${path}${no_ext}/"
     if [ $? -ne 0 ]; then
         log "Failed to create directory on ${host}."
         return 1
     fi
 
     # Extract the archive to the new directory
-    ssh -i "${key_file}" "${host}" "tar -xzf /tmp/${file_n} -C ${path}${no_ext}/"
+    ssh -i "${key_file}" "${host}" "sudo tar -xzf /tmp/${file_n} -C ${path}${no_ext}/"
     if [ $? -ne 0 ]; then
         log "Failed to extract archive on ${host}."
         return 1
     fi
 
-    # Remove the archive from the /tmp directory
-    ssh -i "${key_file}" "${host}" "rm /tmp/${file_n}"
+    # Removi the archive from the /tmp directory
+    ssh -i "${key_file}" "${host}" "sudo rm /tmp/${file_n}"
     if [ $? -ne 0 ]; then
         log "Failed to remove archive from /tmp on ${host}."
         return 1
     fi
 
     # Remove the current symbolic link
-    ssh -i "${key_file}" "${host}" "rm -rf /var/www/unity-tree/current"
+    ssh -i "${key_file}" "${host}" "sudo rm -rf /var/www/unity-tree/current"
     if [ $? -ne 0 ]; then
         log "Failed to remove current symbolic link on ${host}."
         return 1
     fi
 
     # Create a new symbolic link to the new directory
-    ssh -i "${key_file}" "${host}" "ln -s ${path}${no_ext}/ /var/www/unity-tree/current"
+    ssh -i "${key_file}" "${host}" "sudo ln -s ${path}${no_ext}/ /var/www/unity-tree/current"
     if [ $? -ne 0 ]; then
         log "Failed to create new symbolic link on ${host}."
         return 1
@@ -105,6 +106,7 @@ do_deploy() {
 deploy() {
     # Call do_pack to create the archive
     archive_path=$(do_pack)
+
     if [ $? -ne 0 ]; then
         log "Failed to pack the project."
         return 1
@@ -118,7 +120,7 @@ deploy() {
 
     # Call do_deploy to distribute the archive and return its result
     for host in "${hosts[@]}"; do
-        do_deploy "${archive_path}" "${host}"
+        do_deploy "${archive_path}" "ubuntu@${host}"
         if [ $? -ne 0 ]; then
             log "Deployment to ${host} failed."
             return 1
