@@ -108,7 +108,7 @@ def upgrade():
     )
     op.create_table('media',
     sa.Column('file_name', sa.String(length=255), nullable=False),
-    sa.Column('file_type', sa.String(), nullable=False),
+    sa.Column('file_type', sa.String(length=255), nullable=False),
     sa.Column('family_id', sa.String(length=255), nullable=True),
     sa.Column('member_id', sa.String(length=255), nullable=True),
     sa.Column('user_id', sa.String(length=255), nullable=True),
