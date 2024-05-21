@@ -10,6 +10,7 @@ from datetime import datetime
 # Import exists and isdir from os.path to check file/directory existence
 from os.path import exists, isdir
 
+env.key_filename ='./0-RSA'
 # Define the hosts for Fabric
 env.hosts = ['54.172.4.252', '54.175.109.84']
 

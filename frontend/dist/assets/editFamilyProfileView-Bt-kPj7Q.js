@@ -1,1 +1,0 @@
-import{d as a,B as i,t as r}from"./index-Cma29Q-e.js";const s={__name:"editFamilyProfileView",props:{familyId:{type:String}},setup(t){const e=t;return(l,o)=>(a(),i("div",null," Edit Family Page "+r(e.familyId),1))}};export{s as default};

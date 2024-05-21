@@ -6,7 +6,8 @@ sudo apt install -y nodejs npm
 
 
 # Run the build
-
+npm install
+npm run build
 # create the dir where the static files will be served from
 # the current will hold the current build of the frontend application
 sudo mkdir -p /var/www/unity-tree/releases/test /var/www/unity-tree/shared
