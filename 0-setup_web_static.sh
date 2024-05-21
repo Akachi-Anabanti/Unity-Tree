@@ -8,17 +8,18 @@ sudo apt-get -y install nginx
 sudo mkdir -p /var/www/unity-tree/releases/test /var/www/unity-tree/shared
 echo "Test Static file setup" | sudo tee /var/www/unity-tree/releases/test/index.html
 sudo ln -sf /var/www/unity-tree/releases/test/ /var/www/unity-tree/current
-sudo chown -hR ubuntu:ubuntu /var/www/unity-tree
-
+sudo chown -hR www-data:www-data /var/www/unity-tree
+HOSTNAME=$(hostname)
 sudo printf '
 server {
   listen 80 default_server;
   listen [::]:80 default_server;
-  server_name $HOSTNAME
+  server_name $HOSTNAME;
 
+  add_header X-Served-By $HOSTNAME;
 
   location / {
-     alias /var/www/unity-tree/current;
+     alias /var/www/unity-tree/current/;
      index index.html index.htm;
      try_files $uri $uri/ /index.html;
   }

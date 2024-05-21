@@ -15,5 +15,5 @@ echo "Test Static file setup" | sudo tee /var/www/unity-tree/releases/test/index
 
 sudo ln -sf /var/www/unity-tree/releases/test/ /var/www/unity-tree/current
 
-sudo chown -hR ubuntu:ubuntu /var/www/unity-tree
+sudo chown -hR www-data:www-data /var/www/unity-tree
 
