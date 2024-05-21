@@ -87,7 +87,6 @@ def login():
 
 
 @api_v1_bp.route("/logout", methods=["POST"])
-@jwt_required()
 def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
