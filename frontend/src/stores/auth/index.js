@@ -131,13 +131,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const { status } = await API.auth.register(info)
       if (status == 201) {
-        const credentials = {
-          password: info.password,
-          email: info.email
-        }
-        // if registration is successful automatically login
+        // if registration is successful
+        // re route the user to login page
         //  user and update
-        await dispatchLogin(credentials)
+        await router.push('account/login')
       }
     } catch (error) {
       return {
