@@ -20,7 +20,7 @@ onBeforeMount(async () => {
 
   if (!useFamily.hasFamily) {
     useAlert.dispatchShowMainAlertFailure('This family does not exist consider creating it')
-    router.push('/')
+    await router.push('/')
   }
 })
 
