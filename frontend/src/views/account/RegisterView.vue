@@ -187,5 +187,12 @@ function isValidPassword(password) {
   justify-content: space-evenly;
   grid-column: span 2;
 }
+@media (max-width: 600px) {
+  .row-1,
+  .row-2,
+  .row-3 {
+    grid-template-columns: 1fr; /* Stack the inputs vertically on small screens */
+  }
+}
 
 </style>
