@@ -18,6 +18,12 @@ class Settings:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     REDIS_URL = "redis://localhost"
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_recycle': 280,
+        'pool_timeout': 100,
+        'pool_pre_ping': True
+    }
+
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "app.db")

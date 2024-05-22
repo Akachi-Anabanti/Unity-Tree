@@ -88,7 +88,7 @@ export const useAuthStore = defineStore('auth', () => {
           setUser(content)
 
           isLoggedIn.value = true
-          router.push(returnUrl.value || '/')
+          await router.push(returnUrl.value || '/')
 
           alertStore.dispatchShowMainAlertSuccess(data.msg)
         }
