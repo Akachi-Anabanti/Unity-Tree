@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
           alertStore.dispatchShowMainAlertSuccess(data.msg)
         }
       } else {
-        dispatchLogout()
+        await dispatchLogout()
         alertStore.dispatchShowMainAlertFailure(data.msg)
       }
     } catch (error) {
