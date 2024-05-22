@@ -137,7 +137,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
         // if registration is successful automatically login
         //  user and update
-        dispatchLogin(credentials)
+        await dispatchLogin(credentials)
       }
     } catch (error) {
       return {
