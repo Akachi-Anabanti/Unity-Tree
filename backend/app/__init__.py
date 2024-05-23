@@ -8,15 +8,18 @@ from .db_engine import db
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sse import sse
+from .file_service import FileService
 
 jwt = JWTManager()
 migrate = Migrate()
+file_service = FileService(Settings.UPLOAD_FOLDER, Settings.ALLOWED_EXTENSIONS)
 
 
 def create_app(config_name=Settings):
     app = Flask(__name__)
     app.url_map.strict_slashes = False
     app.config.from_object(config_name)
+
     CORS(
         app,
         resources={r"/api/v1/*": {"origins": "*"}},

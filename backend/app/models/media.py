@@ -15,7 +15,7 @@ class Media(BaseModel, db.Model):
     __tablename__ = "media"
 
     file_name: so.Mapped[str] = so.mapped_column(sa.String(255))
-    file_type: so.Mapped[str] = so.mapped_column(sa.String(255))
+    file_type: so.Mapped[str]
 
     family_id = so.mapped_column(sa.String(255), sa.ForeignKey("Family.id"))
     member_id = so.mapped_column(sa.String(255), sa.ForeignKey("Member.id"))
