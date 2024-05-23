@@ -291,6 +291,7 @@ export const useFamilyStore = defineStore('family', () => {
     try {
       const { status, data } = await API.family.updateFamilyMember(memberId)
       if (status === 200) {
+        initMemberInfo(data);
         updateFamilyMember(data)
         return {
           success: true,
